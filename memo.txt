@@ -1,0 +1,142 @@
+----------------------------------------------------------------------------------
+1. Visual Studio Codeをインストール
+
+公式サイト
+
+https://code.visualstudio.com/
+
+インストール後、以下の拡張機能を入れます。
+
+Flutter
+Dart
+
+VS Code左側の「Extensions」から検索できます。
+
+
+----------------------------------------------------------------------------------
+2. Flutter SDKをインストール
+
+公式サイト
+
+https://docs.flutter.dev/get-started/install/windows
+
+ダウンロード
+
+Flutter SDK(zip)
+
+展開先例
+
+
+C:\flutter
+
+展開後
+
+
+C:\flutter\bin
+
+を環境変数 PATH に追加します。
+
+----------------------------------------------------------------------------------
+PowerShellまたはコマンドプロンプト
+
+flutter --version
+
+flutter doctor
+
+
+----------------------------------------------------------------------------------
+4. Android Studioをインストール
+
+公式
+
+https://developer.android.com/studio
+
+FlutterアプリをAndroidで動かすために必要です。
+
+インストール時に
+
+Android SDK
+Android SDK Command-line Tools
+Android Emulator
+
+を選択します。
+
+
+
+----------------------------------------------------------------------------------
+5. Androidライセンス同意
+
+Android Studio導入後
+
+BAT
+flutter doctor --android-licenses
+
+実行。
+
+すべて
+
+Plain Text
+y
+
+でOK。
+
+
+----------------------------------------------------------------------------------
+6. flutter doctor確認
+BAT
+flutter doctor
+
+理想状態
+
+Plain Text
+[?] Flutter
+[?] Android toolchain
+[?] Chrome
+[?] Visual Studio Code
+
+
+----------------------------------------------------------------------------------
+7. 初回プロジェクト作成
+
+作業フォルダへ移動
+
+BAT
+cd C:\work
+
+作成
+
+BAT
+flutter create stamp_app
+
+移動
+
+BAT
+cd stamp_app
+
+起動
+
+BAT
+flutter run
+
+
+----------------------------------------------------------------------------------
+
+9. このアプリで使う予定ライブラリ
+
+プロジェクト作成後に追加します。
+
+QRコード読取
+BAT
+flutter pub add mobile_scanner
+SQLite
+BAT
+flutter pub add sqflite
+URL起動
+BAT
+flutter pub add url_launcher
+状態管理
+BAT
+flutter pub add provider
+
+
+次におすすめ：検索機能
