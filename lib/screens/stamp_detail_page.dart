@@ -20,11 +20,12 @@ class StampDetailPage extends StatefulWidget {
 class _StampDetailPageState extends State<StampDetailPage> {
   final ImagePicker picker = ImagePicker();
   late String? imagePath;
-
+  int favorite = 0;
   @override
   void initState() {
     super.initState();
     imagePath = widget.stamp['image_path'];
+    favorite = widget.stamp['favorite'] ?? 0;
   }
 
   //URLを開く関数追加
@@ -78,6 +79,23 @@ class _StampDetailPageState extends State<StampDetailPage> {
     }
   }
 
+  //お気に入り状態を切り替える関数
+  Future<void> toggleFavorite() async {
+    final newValue = favorite == 0;
+
+    await DatabaseHelper.instance.updateFavorite(widget.stamp['id'], newValue);
+
+    setState(() {
+      favorite = newValue ? 1 : 0;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(newValue ? 'お気に入りに追加しました' : 'お気に入りを解除しました')),
+      );
+    }
+  }
+
   //画像選択メニューを表示する関数
   Future<void> showImageMenu() async {
     showModalBottomSheet(
@@ -123,7 +141,18 @@ class _StampDetailPageState extends State<StampDetailPage> {
   Widget build(BuildContext context) {
     final stamp = widget.stamp;
     return Scaffold(
-      appBar: AppBar(title: const Text('スタンプ詳細')),
+      appBar: AppBar(
+        title: const Text('スタンプ詳細'),
+        actions: [
+          IconButton(
+            onPressed: toggleFavorite,
+            icon: Icon(
+              favorite == 1 ? Icons.star : Icons.star_border,
+              color: Colors.amber,
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(

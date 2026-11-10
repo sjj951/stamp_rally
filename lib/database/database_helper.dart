@@ -7,7 +7,7 @@ class DatabaseHelper {
   static Database? _database;
 
   DatabaseHelper._init();
-
+  //データベースの取得
   Future<Database> get database async {
     if (_database != null) {
       return _database!;
@@ -17,14 +17,16 @@ class DatabaseHelper {
     return _database!;
   }
 
+  //データベースの初期化
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
 
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 2, onCreate: _createDB);
+    return await openDatabase(path, version: 3, onCreate: _createDB);
   }
 
+  //データベースの作成
   Future _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE stamps(
@@ -33,11 +35,25 @@ class DatabaseHelper {
         url TEXT NOT NULL,
         comment TEXT,
         image_path TEXT,
+        favorite INTEGER DEFAULT 0,
         scan_date TEXT NOT NULL
       )
     ''');
   }
 
+  //スタンプのお気に入り状態を更新する関数
+  Future<void> updateFavorite(int id, bool favorite) async {
+    final db = await database;
+
+    await db.update(
+      'stamps',
+      {'favorite': favorite ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  //スタンプの画像パスを更新する関数
   Future<void> updateImage(int id, String imagePath) async {
     final db = await database;
 
@@ -49,6 +65,7 @@ class DatabaseHelper {
     );
   }
 
+  //スタンプの数を取得する関数
   Future<int> getStampCount() async {
     final db = await database;
     final result = await db.rawQuery('SELECT COUNT(*) as count FROM stamps');

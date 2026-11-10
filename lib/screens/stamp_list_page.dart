@@ -16,18 +16,37 @@ class StampListPage extends StatefulWidget {
 class _StampListPageState extends State<StampListPage> {
   List<Map<String, dynamic>> stamps = [];
   List<Map<String, dynamic>> filteredStamps = [];
+  bool favoriteOnly = false;
+  String searchText = '';
   @override
   void initState() {
     super.initState();
     loadStamps();
   }
 
+  //スタンプ一覧の読み込み
   Future<void> loadStamps() async {
     final result = await DatabaseHelper.instance.getStamps();
 
     setState(() {
       stamps = result;
-      filteredStamps = result;
+    });
+
+    filterStamps();
+  }
+
+  //スタンプのフィルタリング
+  void filterStamps() {
+    setState(() {
+      filteredStamps = stamps.where((stamp) {
+        final matchName = stamp['spot_name'].toString().toLowerCase().contains(
+          searchText.toLowerCase(),
+        );
+
+        final matchFavorite = !favoriteOnly || (stamp['favorite'] ?? 0) == 1;
+
+        return matchName && matchFavorite;
+      }).toList();
     });
   }
 
@@ -46,6 +65,14 @@ class _StampListPageState extends State<StampListPage> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
+          SwitchListTile(
+            title: const Text('お気に入りのみ表示'),
+            value: favoriteOnly,
+            onChanged: (value) {
+              favoriteOnly = value;
+              filterStamps();
+            },
+          ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
@@ -55,13 +82,8 @@ class _StampListPageState extends State<StampListPage> {
                 border: OutlineInputBorder(),
               ),
               onChanged: (value) {
-                setState(() {
-                  filteredStamps = stamps.where((stamp) {
-                    return stamp['spot_name'].toString().toLowerCase().contains(
-                      value.toLowerCase(),
-                    );
-                  }).toList();
-                });
+                searchText = value;
+                filterStamps();
               },
             ),
           ),
@@ -102,7 +124,9 @@ class _StampListPageState extends State<StampListPage> {
                               MaterialPageRoute(
                                 builder: (_) => StampDetailPage(stamp: stamp),
                               ),
-                            );
+                            ).then((_) {
+                              loadStamps();
+                            });
                           },
                           onLongPress: () {
                             showDialog(
@@ -171,9 +195,27 @@ class _StampListPageState extends State<StampListPage> {
                                   ),
                                   child: const Icon(Icons.photo, size: 32),
                                 ),
-                          title: Text(
-                            stamp['spot_name'],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          title: Row(
+                            children: [
+                              if ((stamp['favorite'] ?? 0) == 1)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 4),
+                                  child: Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  ),
+                                ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  stamp['spot_name'],
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
