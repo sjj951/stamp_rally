@@ -51,6 +51,7 @@ class _QrScanPageState extends State<QrScanPage> {
 
             await DatabaseHelper.instance.insertStamp(
               spotName: data['spot_name'],
+              category: data['category'],
               url: data['url'],
               comment: data['comment'],
             );

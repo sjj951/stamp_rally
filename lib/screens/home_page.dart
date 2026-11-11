@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 await DatabaseHelper.instance.insertStamp(
                   spotName: '松本城',
+                  category: '城',
                   url: 'https://www.matsumoto-castle.jp',
                   comment: '国宝の城',
                 );

@@ -30,11 +30,13 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
   //URLを開く関数追加
   Future<void> openUrl(String url) async {
+    debugPrint('URL: $url');
+
     final uri = Uri.parse(url);
 
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    final result = await launchUrl(uri, mode: LaunchMode.externalApplication);
+
+    debugPrint('launch result: $result');
   }
 
   //Googleマップを開く関数追加

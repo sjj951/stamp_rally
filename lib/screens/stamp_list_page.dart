@@ -18,6 +18,8 @@ class _StampListPageState extends State<StampListPage> {
   List<Map<String, dynamic>> filteredStamps = [];
   bool favoriteOnly = false;
   String searchText = '';
+  String selectedCategory = 'すべて';
+  final categories = ['すべて', '寺社', '城', '道の駅', '美術館', '公園'];
   @override
   void initState() {
     super.initState();
@@ -45,7 +47,10 @@ class _StampListPageState extends State<StampListPage> {
 
         final matchFavorite = !favoriteOnly || (stamp['favorite'] ?? 0) == 1;
 
-        return matchName && matchFavorite;
+        final matchCategory =
+            selectedCategory == 'すべて' || stamp['category'] == selectedCategory;
+
+        return matchName && matchFavorite && matchCategory;
       }).toList();
     });
   }
@@ -72,6 +77,23 @@ class _StampListPageState extends State<StampListPage> {
               favoriteOnly = value;
               filterStamps();
             },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: DropdownButtonFormField<String>(
+              initialValue: selectedCategory,
+              decoration: const InputDecoration(
+                labelText: 'カテゴリ',
+                border: OutlineInputBorder(),
+              ),
+              items: categories.map((category) {
+                return DropdownMenuItem(value: category, child: Text(category));
+              }).toList(),
+              onChanged: (value) {
+                selectedCategory = value!;
+                filterStamps();
+              },
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8),
@@ -221,6 +243,7 @@ class _StampListPageState extends State<StampListPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 6),
+                              Text('カテゴリ: ${stamp['category'] ?? '-'}'),
                               Text(
                                 '訪問日: ${DateFormat('yyyy/MM/dd HH:mm').format(DateTime.parse(stamp['scan_date']))}',
                               ),

@@ -23,7 +23,7 @@ class DatabaseHelper {
 
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 3, onCreate: _createDB);
+    return await openDatabase(path, version: 4, onCreate: _createDB);
   }
 
   //データベースの作成
@@ -32,6 +32,7 @@ class DatabaseHelper {
       CREATE TABLE stamps(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         spot_name TEXT NOT NULL,
+        category TEXT,
         url TEXT NOT NULL,
         comment TEXT,
         image_path TEXT,
@@ -108,6 +109,7 @@ class DatabaseHelper {
   //スタンプの挿入
   Future<void> insertStamp({
     required String spotName,
+    required String category,
     required String url,
     required String comment,
     String? imagePath,
@@ -116,6 +118,7 @@ class DatabaseHelper {
 
     await db.insert('stamps', {
       'spot_name': spotName,
+      'category': category,
       'url': url,
       'comment': comment,
       'image_path': imagePath,
