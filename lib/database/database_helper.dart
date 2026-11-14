@@ -60,8 +60,72 @@ class DatabaseHelper {
     await _insertInitialSpots(db);
   }
 
+  //データベースのアップグレード
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // V1 → V2
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE stamps ADD COLUMN image_path TEXT');
+    }
+
+    // V2 → V3
+    if (oldVersion < 3) {
+      await db.execute(
+        'ALTER TABLE stamps '
+        'ADD COLUMN favorite INTEGER DEFAULT 0',
+      );
+    }
+
+    // V3 → V4
+    if (oldVersion < 4) {
+      await db.execute(
+        'ALTER TABLE stamps '
+        'ADD COLUMN category TEXT',
+      );
+    }
+
+    // V4 → V5
+    if (oldVersion < 5) {
+      await db.execute('''
+      CREATE TABLE IF NOT EXISTS spots(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        spot_name TEXT NOT NULL,
+        category TEXT NOT NULL,
+        url TEXT,
+        comment TEXT
+      )
+    ''');
+
+      await _insertInitialSpots(db);
+    }
+    if (oldVersion < 6) {
+      await db.transaction((txn) async {
+        // spot_id追加
+        await txn.execute('ALTER TABLE stamps ADD COLUMN spot_id INTEGER');
+
+        // spotsテーブル作成
+        await txn.execute('''
+        CREATE TABLE IF NOT EXISTS spots(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          spot_name TEXT NOT NULL,
+          category TEXT NOT NULL,
+          url TEXT,
+          comment TEXT
+        )
+      ''');
+
+        // 初期データ投入
+        await _insertInitialSpots(txn);
+
+        // 既存データ移行
+        await _migrateSpotIds(txn);
+
+        await _validateSpotIds(txn);
+      });
+    }
+  }
+
   //データベースに初期データを挿入する関数
-  Future<void> _insertInitialSpots(Database db) async {
+  Future<void> _insertInitialSpots(DatabaseExecutor db) async {
     final countResult = await db.rawQuery(
       'SELECT COUNT(*) as count FROM spots',
     );
@@ -120,6 +184,13 @@ class DatabaseHelper {
         'url': 'https://nagano.art.museum',
         'comment': '善光寺近くの美術館',
       },
+
+      {
+        'spot_name': '松本市美術館',
+        'category': '美術館',
+        'url': 'https://www.city.matsumoto.nagano.jp/museum',
+        'comment': '松本城近くの美術館',
+      },
     ];
 
     for (final spot in spots) {
@@ -127,92 +198,84 @@ class DatabaseHelper {
     }
   }
 
-  //データベースのアップグレード
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // V1 → V2
-    if (oldVersion < 2) {
-      await db.execute('ALTER TABLE stamps ADD COLUMN image_path TEXT');
-    }
-
-    // V2 → V3
-    if (oldVersion < 3) {
-      await db.execute(
-        'ALTER TABLE stamps '
-        'ADD COLUMN favorite INTEGER DEFAULT 0',
-      );
-    }
-
-    // V3 → V4
-    if (oldVersion < 4) {
-      await db.execute(
-        'ALTER TABLE stamps '
-        'ADD COLUMN category TEXT',
-      );
-    }
-
-    // V4 → V5
-    if (oldVersion < 5) {
-      await db.execute('''
-      CREATE TABLE IF NOT EXISTS spots(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        spot_name TEXT NOT NULL,
-        category TEXT NOT NULL,
-        url TEXT,
-        comment TEXT
-      )
-    ''');
-
-      await _insertInitialSpots(db);
-    }
-    if (oldVersion < 6) {
-      // spot_id追加
-      await db.execute('ALTER TABLE stamps ADD COLUMN spot_id INTEGER');
-
-      // spots作成
-      await db.execute('''
-      CREATE TABLE IF NOT EXISTS spots(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        spot_name TEXT NOT NULL,
-        category TEXT NOT NULL,
-        url TEXT,
-        comment TEXT
-      )
-    ''');
-
-      // 初期データ
-      await _insertInitialSpots(db);
-
-      // 既存データ移行
-      await _migrateSpotIds(db);
-    }
-  }
-
   // 既存のスタンプデータにspot_idを移行する関数
-  Future<void> _migrateSpotIds(Database db) async {
-    final stamps = await db.query('stamps', columns: ['id', 'spot_name']);
+  Future<void> _migrateSpotIds(DatabaseExecutor db) async {
+    final stamps = await db.query('stamps');
 
     for (final stamp in stamps) {
-      final stampId = stamp['id'] as int;
-      final spotName = stamp['spot_name'] as String;
-
       final spot = await db.query(
         'spots',
-        columns: ['id'],
         where: 'spot_name = ?',
-        whereArgs: [spotName],
+        whereArgs: [stamp['spot_name']],
         limit: 1,
       );
 
       if (spot.isNotEmpty) {
-        final spotId = spot.first['id'] as int;
-
         await db.update(
           'stamps',
-          {'spot_id': spotId},
+          {'spot_id': spot.first['id']},
           where: 'id = ?',
-          whereArgs: [stampId],
+          whereArgs: [stamp['id']],
         );
       }
+    }
+  }
+
+  // spot_idの整合性を検証する関数
+  Future<void> _validateSpotIds(DatabaseExecutor db) async {
+    // ① spot_id未設定チェック
+    final nullResult = await db.rawQuery('''
+    SELECT COUNT(*) AS count
+    FROM stamps
+    WHERE spot_id IS NULL
+  ''');
+
+    final nullCount = nullResult.first['count'] as int;
+
+    if (nullCount > 0) {
+      throw Exception(
+        'spot_id未設定レコードが '
+        '$nullCount 件あります',
+      );
+    }
+
+    // ② spotsに存在しないspot_idチェック
+    final orphanResult = await db.rawQuery('''
+    SELECT COUNT(*) AS count
+    FROM stamps st
+    LEFT JOIN spots sp
+      ON st.spot_id = sp.id
+    WHERE sp.id IS NULL
+  ''');
+
+    final orphanCount = orphanResult.first['count'] as int;
+
+    if (orphanCount > 0) {
+      throw Exception(
+        '存在しないspot_idが '
+        '$orphanCount 件あります',
+      );
+    }
+
+    // ③ 移行件数チェック
+    final stampCount = Sqflite.firstIntValue(
+      await db.rawQuery('SELECT COUNT(*) FROM stamps'),
+    )!;
+
+    final linkedCount = Sqflite.firstIntValue(
+      await db.rawQuery('''
+          SELECT COUNT(*)
+          FROM stamps
+          WHERE spot_id IS NOT NULL
+        '''),
+    )!;
+
+    if (stampCount != linkedCount) {
+      throw Exception(
+        '移行失敗: '
+        '$linkedCount / $stampCount 件しか '
+        'spot_idへ変換できませんでした',
+      );
     }
   }
 
