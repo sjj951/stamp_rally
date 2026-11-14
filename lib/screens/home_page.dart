@@ -306,6 +306,7 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton(
                   onPressed: () async {
                     await DatabaseHelper.instance.insertStamp(
+                      spotId: 3,
                       spotName: '松本城',
                       category: '城',
                       url: 'https://www.matsumoto-castle.jp',
