@@ -3,7 +3,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'dart:convert';
 
-import '../database/database_helper.dart';
+import '../models/stamp.dart';
+import '../repositories/stamp_repository.dart';
 
 class QrScanPage extends StatefulWidget {
   const QrScanPage({super.key});
@@ -33,9 +34,7 @@ class _QrScanPageState extends State<QrScanPage> {
           try {
             final data = jsonDecode(code);
 
-            final exists = await DatabaseHelper.instance.existsStamp(
-              data['spot_name'],
-            );
+            final exists = await StampRepository().exists(data['spot_id']);
 
             if (exists) {
               if (context.mounted) {
@@ -49,12 +48,15 @@ class _QrScanPageState extends State<QrScanPage> {
               return;
             }
 
-            await DatabaseHelper.instance.insertStamp(
-              spotId: data['spot_id'],
-              spotName: data['spot_name'],
-              category: data['category'],
-              url: data['url'],
-              comment: data['comment'],
+            await StampRepository().insert(
+              Stamp(
+                spotId: data['spot_id'],
+                spotName: data['spot_name'],
+                category: data['category'],
+                url: data['url'],
+                comment: data['comment'],
+                scanDate: DateTime.now().toIso8601String(),
+              ),
             );
 
             if (context.mounted) {

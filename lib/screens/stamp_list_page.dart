@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 
 import 'dart:io';
 
-import '../database/database_helper.dart';
 import 'stamp_detail_page.dart';
 import '../models/stamp.dart';
+import '../repositories/stamp_repository.dart';
 
 class StampListPage extends StatefulWidget {
   const StampListPage({super.key});
@@ -29,7 +29,7 @@ class _StampListPageState extends State<StampListPage> {
 
   //スタンプ一覧の読み込み
   Future<void> loadStamps() async {
-    final result = await DatabaseHelper.instance.getStamps();
+    final result = await StampRepository().getAll();
 
     setState(() {
       stamps = result;
@@ -168,11 +168,7 @@ class _StampListPageState extends State<StampListPage> {
                                     onPressed: () async {
                                       final stampId = stamp.id;
                                       if (stampId == null) return;
-
-                                      await DatabaseHelper.instance.deleteStamp(
-                                        stampId,
-                                      );
-
+                                      await StampRepository().delete(stampId);
                                       if (context.mounted) {
                                         Navigator.pop(context);
 

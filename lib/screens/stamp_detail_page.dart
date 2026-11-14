@@ -4,11 +4,10 @@ import 'package:intl/intl.dart';
 
 import 'dart:io';
 
-import '../database/database_helper.dart';
-
 import 'package:image_picker/image_picker.dart';
 
 import '../models/stamp.dart';
+import '../repositories/stamp_repository.dart';
 
 class StampDetailPage extends StatefulWidget {
   final Stamp stamp;
@@ -74,7 +73,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
     final stampId = widget.stamp.id;
     if (stampId == null) return;
 
-    await DatabaseHelper.instance.updateImage(stampId, image.path);
+    await StampRepository().updateImage(stampId, image.path);
 
     setState(() {
       imagePath = image.path;
@@ -93,7 +92,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
     final newValue = favorite == 0 ? 1 : 0;
 
-    await DatabaseHelper.instance.updateFavorite(stampId, newValue == 1);
+    await StampRepository().updateFavorite(stampId, newValue == 1);
 
     setState(() {
       favorite = newValue;

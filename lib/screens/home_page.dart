@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 
-import '../database/database_helper.dart';
 import '../screens/qr_scan_page.dart';
 import 'stamp_list_page.dart';
+import '../repositories/stamp_repository.dart';
+import '../repositories/spot_repository.dart';
+import '../models/stamp.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,8 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   //データベースからカテゴリごとの進捗状況を取得して更新する関数
   Future<void> loadCategoryProgress() async {
-    final result = await DatabaseHelper.instance.getCategoryProgress();
-
+    final result = await SpotRepository().getCategoryProgress();
     setState(() {
       categoryProgress = result;
     });
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   //データベースからスタンプの件数を取得して更新する関数
   Future<void> loadCount() async {
-    final count = await DatabaseHelper.instance.getStampCount();
+    final count = await StampRepository().getCount();
 
     setState(() {
       stampCount = count;
@@ -304,12 +305,15 @@ class _HomePageState extends State<HomePage> {
 
                 ElevatedButton(
                   onPressed: () async {
-                    await DatabaseHelper.instance.insertStamp(
-                      spotId: 3,
-                      spotName: '松本城',
-                      category: '城',
-                      url: 'https://www.matsumoto-castle.jp',
-                      comment: '国宝の城',
+                    await StampRepository().insert(
+                      Stamp(
+                        spotId: 3,
+                        spotName: '松本城',
+                        category: '城',
+                        url: 'https://www.matsumoto-castle.jp',
+                        comment: '国宝の城',
+                        scanDate: DateTime.now().toIso8601String(),
+                      ),
                     );
                     loadCount(); // 件数更新
                   },
