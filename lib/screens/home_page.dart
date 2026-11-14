@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                   'スタンプ取得数',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                /*
+                const SizedBox(height: 16),
                 Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(
@@ -220,7 +220,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                */
                 Card(
                   margin: const EdgeInsets.all(16),
                   child: Padding(

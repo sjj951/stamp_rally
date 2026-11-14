@@ -8,8 +8,10 @@ import '../database/database_helper.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import '../models/stamp.dart';
+
 class StampDetailPage extends StatefulWidget {
-  final Map<String, dynamic> stamp;
+  final Stamp stamp;
 
   const StampDetailPage({super.key, required this.stamp});
 
@@ -24,8 +26,8 @@ class _StampDetailPageState extends State<StampDetailPage> {
   @override
   void initState() {
     super.initState();
-    imagePath = widget.stamp['image_path'];
-    favorite = widget.stamp['favorite'] ?? 0;
+    imagePath = widget.stamp.imagePath;
+    favorite = widget.stamp.favorite;
   }
 
   //URLを開く関数追加
@@ -69,7 +71,10 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
   //画像を保存する関数
   Future<void> saveImage(XFile image) async {
-    await DatabaseHelper.instance.updateImage(widget.stamp['id'], image.path);
+    final stampId = widget.stamp.id;
+    if (stampId == null) return;
+
+    await DatabaseHelper.instance.updateImage(stampId, image.path);
 
     setState(() {
       imagePath = image.path;
@@ -83,17 +88,22 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
   //お気に入り状態を切り替える関数
   Future<void> toggleFavorite() async {
-    final newValue = favorite == 0;
+    final stampId = widget.stamp.id;
+    if (stampId == null) return;
 
-    await DatabaseHelper.instance.updateFavorite(widget.stamp['id'], newValue);
+    final newValue = favorite == 0 ? 1 : 0;
+
+    await DatabaseHelper.instance.updateFavorite(stampId, newValue == 1);
 
     setState(() {
-      favorite = newValue ? 1 : 0;
+      favorite = newValue;
     });
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(newValue ? 'お気に入りに追加しました' : 'お気に入りを解除しました')),
+        SnackBar(
+          content: Text(newValue == 1 ? 'お気に入りに追加しました' : 'お気に入りを解除しました'),
+        ),
       );
     }
   }
@@ -169,10 +179,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
-                Text(
-                  stamp['spot_name'] ?? '',
-                  style: const TextStyle(fontSize: 24),
-                ),
+                Text(stamp.spotName, style: const TextStyle(fontSize: 24)),
 
                 const SizedBox(height: 20),
 
@@ -199,7 +206,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
                             child: InteractiveViewer(
                               minScale: 0.5,
                               maxScale: 5.0,
-                              child: Image.file(File(stamp['image_path'])),
+                              child: Image.file(File(imagePath!)),
                             ),
                           ),
                         ),
@@ -221,13 +228,13 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
                 InkWell(
                   onTap: () {
-                    final url = stamp['url'];
-                    if (url != null && url.toString().isNotEmpty) {
+                    final url = stamp.url;
+                    if (url.isNotEmpty) {
                       openUrl(url);
                     }
                   },
                   child: Text(
-                    stamp['url'] ?? '',
+                    stamp.url,
                     style: const TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
@@ -235,9 +242,9 @@ class _StampDetailPageState extends State<StampDetailPage> {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {
-                    openUrl(stamp['url']);
-                  },
+                  onPressed: stamp.url.isEmpty
+                      ? null
+                      : () => openUrl(stamp.url!),
                   icon: const Icon(Icons.open_in_new),
                   label: const Text('公式サイトを見る'),
                 ),
@@ -245,7 +252,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
                 ElevatedButton.icon(
                   onPressed: () {
-                    openMap(stamp['spot_name']);
+                    openMap(stamp.spotName);
                   },
                   icon: const Icon(Icons.map),
                   label: const Text('Google Mapsで開く'),
@@ -255,7 +262,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
                 const Text('感想', style: TextStyle(fontWeight: FontWeight.bold)),
 
-                Text(stamp['comment'] ?? ''),
+                Text(stamp.comment),
 
                 const SizedBox(height: 20),
 
@@ -266,7 +273,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
                 Text(
                   DateFormat('yyyy/MM/dd HH:mm')
-                      .format(DateTime.parse(stamp['scan_date'])),
+                      .format(DateTime.parse(stamp.scanDate)),
                 ),
               ],
             ),

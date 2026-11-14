@@ -1,6 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/stamp.dart';
+
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
@@ -487,9 +489,14 @@ class DatabaseHelper {
   }
 
   //スタンプの取得
-  Future<List<Map<String, dynamic>>> getStamps() async {
+  Future<List<Stamp>> getStamps() async {
     final db = await database;
 
-    return await db.query('stamps', orderBy: 'scan_date DESC');
+    final result = await db.query(
+      'stamps',
+      orderBy: 'favorite DESC, scan_date DESC',
+    );
+
+    return result.map((e) => Stamp.fromMap(e)).toList();
   }
 }

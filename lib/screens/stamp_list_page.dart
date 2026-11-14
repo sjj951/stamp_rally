@@ -5,6 +5,7 @@ import 'dart:io';
 
 import '../database/database_helper.dart';
 import 'stamp_detail_page.dart';
+import '../models/stamp.dart';
 
 class StampListPage extends StatefulWidget {
   const StampListPage({super.key});
@@ -14,8 +15,8 @@ class StampListPage extends StatefulWidget {
 }
 
 class _StampListPageState extends State<StampListPage> {
-  List<Map<String, dynamic>> stamps = [];
-  List<Map<String, dynamic>> filteredStamps = [];
+  List<Stamp> stamps = [];
+  List<Stamp> filteredStamps = [];
   bool favoriteOnly = false;
   String searchText = '';
   String selectedCategory = 'すべて';
@@ -41,14 +42,14 @@ class _StampListPageState extends State<StampListPage> {
   void filterStamps() {
     setState(() {
       filteredStamps = stamps.where((stamp) {
-        final matchName = stamp['spot_name'].toString().toLowerCase().contains(
+        final matchName = stamp.spotName.toString().toLowerCase().contains(
           searchText.toLowerCase(),
         );
 
-        final matchFavorite = !favoriteOnly || (stamp['favorite'] ?? 0) == 1;
+        final matchFavorite = !favoriteOnly || stamp.favorite == 1;
 
         final matchCategory =
-            selectedCategory == 'すべて' || stamp['category'] == selectedCategory;
+            selectedCategory == 'すべて' || stamp.category == selectedCategory;
 
         return matchName && matchFavorite && matchCategory;
       }).toList();
@@ -155,7 +156,7 @@ class _StampListPageState extends State<StampListPage> {
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text('削除確認'),
-                                content: Text('${stamp['spot_name']}を削除しますか？'),
+                                content: Text('${stamp.spotName}を削除しますか？'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -165,8 +166,11 @@ class _StampListPageState extends State<StampListPage> {
                                   ),
                                   TextButton(
                                     onPressed: () async {
+                                      final stampId = stamp.id;
+                                      if (stampId == null) return;
+
                                       await DatabaseHelper.instance.deleteStamp(
-                                        stamp['id'],
+                                        stampId,
                                       );
 
                                       if (context.mounted) {
@@ -182,8 +186,8 @@ class _StampListPageState extends State<StampListPage> {
                             );
                           },
                           leading:
-                              stamp['image_path'] != null &&
-                                  stamp['image_path'].toString().isNotEmpty
+                              stamp.imagePath != null &&
+                                  stamp.imagePath.toString().isNotEmpty
                               ? GestureDetector(
                                   onTap: () {
                                     showDialog(
@@ -191,7 +195,7 @@ class _StampListPageState extends State<StampListPage> {
                                       builder: (context) => Dialog(
                                         child: InteractiveViewer(
                                           child: Image.file(
-                                            File(stamp['image_path']),
+                                            File(stamp.imagePath!),
                                             fit: BoxFit.contain,
                                           ),
                                         ),
@@ -201,7 +205,7 @@ class _StampListPageState extends State<StampListPage> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.file(
-                                      File(stamp['image_path']),
+                                      File(stamp.imagePath!),
                                       width: 70,
                                       height: 70,
                                       fit: BoxFit.cover,
@@ -219,7 +223,7 @@ class _StampListPageState extends State<StampListPage> {
                                 ),
                           title: Row(
                             children: [
-                              if ((stamp['favorite'] ?? 0) == 1)
+                              if (stamp.favorite == 1)
                                 const Padding(
                                   padding: EdgeInsets.only(right: 4),
                                   child: Icon(
@@ -231,7 +235,7 @@ class _StampListPageState extends State<StampListPage> {
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  stamp['spot_name'],
+                                  stamp.spotName,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -243,11 +247,11 @@ class _StampListPageState extends State<StampListPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 6),
-                              Text('カテゴリ: ${stamp['category'] ?? '-'}'),
+                              Text('カテゴリ: ${stamp.category}'),
                               Text(
-                                '訪問日: ${DateFormat('yyyy/MM/dd HH:mm').format(DateTime.parse(stamp['scan_date']))}',
+                                '訪問日: ${DateFormat('yyyy/MM/dd HH:mm').format(DateTime.parse(stamp.scanDate))}',
                               ),
-                              Text('コメント: ${stamp['comment'] ?? ''}'),
+                              Text('コメント: ${stamp.comment}'),
                             ],
                           ),
                           trailing: const Icon(
