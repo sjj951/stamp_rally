@@ -2,5 +2,12 @@
   "java.compile.nullAnalysis.mode": "automatic",
   "editor.formatOnSave": true,
   "files.autoSave": "afterDelay",
-  "editor.defaultFormatter": "Dart-Code.dart-code"
+  "editor.defaultFormatter": "Dart-Code.dart-code",
+  "cSpell.words": [
+    "AUTOINCREMENT",
+    "sqflite",
+    "spotname",
+    "imagepath",
+    "viewmodels"
+  ]
 }

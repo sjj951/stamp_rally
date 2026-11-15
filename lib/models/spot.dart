@@ -2,6 +2,7 @@ class Spot {
   final int id;
   final String spotName;
   final String category;
+  final String prefecture;
   final String? url;
   final String? comment;
 
@@ -9,6 +10,7 @@ class Spot {
     required this.id,
     required this.spotName,
     required this.category,
+    required this.prefecture,
     this.url,
     this.comment,
   });
@@ -18,6 +20,7 @@ class Spot {
       id: map['id'],
       spotName: map['spot_name'],
       category: map['category'],
+      prefecture: map['prefecture'],
       url: map['url'],
       comment: map['comment'],
     );
@@ -28,6 +31,7 @@ class Spot {
       'id': id,
       'spot_name': spotName,
       'category': category,
+      'prefecture': prefecture,
       'url': url,
       'comment': comment,
     };

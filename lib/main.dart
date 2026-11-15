@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import '../screens/home_page.dart';
 import '../database/database_helper.dart';
 
+import 'package:provider/provider.dart';
+
+// cspell:ignore viewmodels
+import 'viewmodels/home_view_model.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,11 +23,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'スタンプラリー',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.blue),
-      home: const HomePage(),
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => HomeViewModel())],
+      child: MaterialApp(title: 'Stamp Rally', home: const HomePage()),
     );
   }
 }

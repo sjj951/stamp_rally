@@ -29,7 +29,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
@@ -56,6 +56,7 @@ class DatabaseHelper {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       spot_name TEXT NOT NULL,
       category TEXT NOT NULL,
+      prefecture TEXT,
       url TEXT,
       comment TEXT
     )
@@ -126,6 +127,9 @@ class DatabaseHelper {
         await _validateSpotIds(txn);
       });
     }
+    if (oldVersion < 7) {
+      await db.execute('ALTER TABLE spots ADD COLUMN prefecture TEXT');
+    }
   }
 
   //データベースに初期データを挿入する関数
@@ -145,6 +149,7 @@ class DatabaseHelper {
         'category': '寺社',
         'url': 'https://www.zenkoji.jp',
         'comment': '長野市の有名なお寺',
+        'prefecture': '長野市',
       },
 
       {
@@ -152,6 +157,7 @@ class DatabaseHelper {
         'category': '寺社',
         'url': 'https://www.togakushi-jinja.jp',
         'comment': '戸隠の名所',
+        'prefecture': '長野市',
       },
 
       {
@@ -159,6 +165,7 @@ class DatabaseHelper {
         'category': '城',
         'url': 'https://www.matsumoto-castle.jp',
         'comment': '国宝の城',
+        'prefecture': '松本市',
       },
 
       {
@@ -166,6 +173,7 @@ class DatabaseHelper {
         'category': '城',
         'url': 'https://ueda-cb.gr.jp',
         'comment': '真田ゆかりの城',
+        'prefecture': '上田県',
       },
 
       {
@@ -173,6 +181,7 @@ class DatabaseHelper {
         'category': '温泉',
         'url': 'https://nozawakanko.jp',
         'comment': '人気温泉地',
+        'prefecture': '野沢温泉村',
       },
 
       {
@@ -180,6 +189,7 @@ class DatabaseHelper {
         'category': '温泉',
         'url': 'https://www.shirahone.org',
         'comment': '乳白色の温泉',
+        'prefecture': '松本市',
       },
 
       {
@@ -187,13 +197,15 @@ class DatabaseHelper {
         'category': '美術館',
         'url': 'https://nagano.art.museum',
         'comment': '善光寺近くの美術館',
+        'prefecture': '長野市',
       },
 
       {
         'spot_name': '松本市美術館',
-        'category': '美術館',
+        'category': '',
         'url': 'https://www.city.matsumoto.nagano.jp/museum',
         'comment': '松本城近くの美術館',
+        'prefecture': '松本市',
       },
     ];
 
@@ -282,6 +294,36 @@ class DatabaseHelper {
       );
     }
   }
+// 都道府県の一覧を取得する関数
+  Future<List<String>> getPrefectures() async {
+    final db = await database;
+
+    final result = await db.rawQuery('''
+    SELECT DISTINCT prefecture
+    FROM spots
+    ORDER BY prefecture
+  ''');
+
+    final prefectures = <String>['すべて'];
+
+    bool hasEmpty = false;
+
+    for (final row in result) {
+      final prefecture = row['prefecture']?.toString() ?? '';
+
+      if (prefecture.isEmpty) {
+        hasEmpty = true;
+      } else {
+        prefectures.add(prefecture);
+      }
+    }
+
+    if (hasEmpty) {
+      prefectures.add('都道府県未設定');
+    }
+
+    return prefectures;
+  }
 
   //スポット一覧を取得する関数
   Future<List<Spot>> getSpots() async {
@@ -328,6 +370,37 @@ class DatabaseHelper {
   ''');
 
     return result.map(Spot.fromMap).toList();
+  }
+
+  // スポットのカテゴリーごとの件数を取得する関数
+  Future<List<String>> getCategories() async {
+    final db = await database;
+
+    final result = await db.rawQuery('''
+    SELECT DISTINCT category
+    FROM spots
+    ORDER BY category
+  ''');
+
+    final categories = <String>['すべて'];
+
+    bool hasUncategorized = false;
+
+    for (final row in result) {
+      final category = row['category']?.toString() ?? '';
+
+      if (category.isEmpty) {
+        hasUncategorized = true;
+      } else {
+        categories.add(category);
+      }
+    }
+
+    if (hasUncategorized) {
+      categories.add('カテゴリ未設定');
+    }
+
+    return categories;
   }
 
   // スタンプが存在しないスポットをカテゴリーごとに取得する関数

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/qr_scan_page.dart';
 import 'stamp_list_page.dart';
@@ -7,6 +8,8 @@ import '../repositories/stamp_repository.dart';
 import '../repositories/spot_repository.dart';
 import '../models/stamp.dart';
 import '../models/category_progress.dart';
+// cspell:ignore viewmodels
+import '../viewmodels/home_view_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int stampCount = 0;
+  //int stampCount = 0;
   static const int totalSpots = 50;
   bool hasShownCompleteDialog = false;
   late ConfettiController _confettiController;
@@ -29,6 +32,9 @@ class _HomePageState extends State<HomePage> {
     );
     loadCount();
     loadCategoryProgress();
+    Future.microtask(() {
+      context.read<HomeViewModel>().load();
+    });
   }
 
   @override
@@ -50,7 +56,7 @@ class _HomePageState extends State<HomePage> {
     final count = await StampRepository().getCount();
 
     setState(() {
-      stampCount = count;
+      //stampCount = count;
     });
 
     if (count >= totalSpots && !hasShownCompleteDialog && mounted) {
@@ -127,7 +133,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final rate = stampCount / totalSpots;
+    final vm = context.watch<HomeViewModel>();
+
+    final rate = vm.stampCount / totalSpots;
 
     final percent = (rate * 100).toStringAsFixed(0);
 
@@ -155,6 +163,7 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
+                /*
                 Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(
@@ -177,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(height: 16),
 
                         Text(
-                          '$stampCount / $totalSpots',
+                          '${vm.stampCount} / $totalSpots',
                           style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -222,6 +231,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                */
                 Card(
                   margin: const EdgeInsets.all(16),
                   child: Padding(
