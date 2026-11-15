@@ -243,7 +243,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
                 ElevatedButton.icon(
                   onPressed: stamp.url.isEmpty
                       ? null
-                      : () => openUrl(stamp.url!),
+                      : () => openUrl(stamp.url),
                   icon: const Icon(Icons.open_in_new),
                   label: const Text('公式サイトを見る'),
                 ),

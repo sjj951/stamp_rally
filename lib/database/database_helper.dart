@@ -1,7 +1,9 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../models/category_progress.dart';
 import '../models/stamp.dart';
+import '../models/spot.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -281,11 +283,40 @@ class DatabaseHelper {
     }
   }
 
-  // スタンプが存在しないスポットを取得する関数
-  Future<List<Map<String, dynamic>>> getMissingSpots() async {
+  //スポット一覧を取得する関数
+  Future<List<Spot>> getSpots() async {
     final db = await database;
 
-    return await db.rawQuery('''
+    final result = await db.query('spots', orderBy: 'category, spot_name');
+
+    return result.map((e) => Spot.fromMap(e)).toList();
+  }
+
+  //スポットを挿入する関数
+  Future<int> insertSpot(Spot spot) async {
+    final db = await database;
+
+    return await db.insert('spots', spot.toMap());
+  }
+
+  // 指定されたIDのスポットを取得する関数
+  Future<Spot?> getSpotById(int id) async {
+    final db = await database;
+
+    final result = await db.query('spots', where: 'id = ?', whereArgs: [id]);
+
+    if (result.isEmpty) {
+      return null;
+    }
+
+    return Spot.fromMap(result.first);
+  }
+
+  // スタンプが存在しないスポットを取得する関数
+  Future<List<Spot>> getMissingSpots() async {
+    final db = await database;
+
+    final result = await db.rawQuery('''
     SELECT
       spots.*
     FROM spots
@@ -295,15 +326,15 @@ class DatabaseHelper {
     ORDER BY spots.category,
              spots.spot_name
   ''');
+
+    return result.map(Spot.fromMap).toList();
   }
 
   // スタンプが存在しないスポットをカテゴリーごとに取得する関数
-  Future<List<Map<String, dynamic>>> getMissingSpotsByCategory(
-    String category,
-  ) async {
+  Future<List<Spot>> getMissingSpotsByCategory(String category) async {
     final db = await database;
 
-    return await db.rawQuery(
+    final result = await db.rawQuery(
       '''
     SELECT
       spots.*
@@ -316,6 +347,7 @@ class DatabaseHelper {
   ''',
       [category],
     );
+    return result.map(Spot.fromMap).toList();
   }
 
   //スポットのカテゴリーごとの件数を取得する関数
@@ -368,10 +400,10 @@ class DatabaseHelper {
   }
 
   //スポットのカテゴリーごとの件数を取得する関数
-  Future<List<Map<String, dynamic>>> getCategoryProgress() async {
+  Future<List<CategoryProgress>> getCategoryProgress() async {
     final db = await database;
 
-    return await db.rawQuery('''
+    final result = await db.rawQuery('''
     SELECT
       s.category,
       COUNT(DISTINCT s.id) AS total_count,
@@ -382,6 +414,8 @@ class DatabaseHelper {
     GROUP BY s.category
     ORDER BY s.category
   ''');
+
+    return result.map(CategoryProgress.fromMap).toList();
   }
 
   //スタンプのカテゴリーごとの件数を取得する関数

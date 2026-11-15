@@ -1,5 +1,6 @@
 import '../database/database_helper.dart';
-//import '../models/spot.dart';
+import '../models/spot.dart';
+import '../models/category_progress.dart';
 
 class SpotRepository {
   final DatabaseHelper _db = DatabaseHelper.instance;
@@ -8,15 +9,15 @@ class SpotRepository {
     //return await _db.getSpots();
   }
 */
-  Future<List<Map<String, dynamic>>> getCategoryProgress() async {
+  Future<List<CategoryProgress>> getCategoryProgress() async {
     return await _db.getCategoryProgress();
   }
 
-  Future<List<Map<String, dynamic>>> getMissingSpots() async {
+  Future<List<Spot>> getMissingSpots() async {
     return await _db.getMissingSpots();
   }
 
-  Future<List<Map<String, dynamic>>> getMissingSpotsByCategory(
+  Future<List<Spot>> getMissingSpotsByCategory(
     String category,
   ) async {
     return await _db.getMissingSpotsByCategory(category);

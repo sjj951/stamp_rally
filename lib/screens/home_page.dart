@@ -6,6 +6,7 @@ import 'stamp_list_page.dart';
 import '../repositories/stamp_repository.dart';
 import '../repositories/spot_repository.dart';
 import '../models/stamp.dart';
+import '../models/category_progress.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   static const int totalSpots = 50;
   bool hasShownCompleteDialog = false;
   late ConfettiController _confettiController;
-  List<Map<String, dynamic>> categoryProgress = [];
+  List<CategoryProgress> categoryProgress = [];
   @override
   void initState() {
     super.initState();
@@ -238,29 +239,45 @@ class _HomePageState extends State<HomePage> {
 
                         const SizedBox(height: 16),
 
-                        ...categoryProgress.map((row) {
-                          final category = row['category'] as String;
-
-                          final total = row['total_count'] as int;
-
-                          final acquired = row['acquired_count'] as int;
-
-                          final rate = total == 0 ? 0.0 : acquired / total;
-
+                        ...categoryProgress.map((item) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '$category '
-                                  '$acquired / $total '
-                                  '(${(rate * 100).toStringAsFixed(0)}%)',
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${item.category} '
+                                      '${item.acquiredCount}'
+                                      '/'
+                                      '${item.totalCount}'
+                                      ' (${item.progressPercent}%)',
+                                    ),
+                                    Text(
+                                      item.badgeLabel,
+                                      style: TextStyle(
+                                        color: item.badgeColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    if (item.isCompleted)
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 8),
+                                        child: Chip(
+                                          avatar: Icon(
+                                            item.badgeIcon,
+                                            color: item.badgeColor,
+                                          ),
+                                          label: Text(item.badgeLabel),
+                                        ),
+                                      ),
+                                  ],
                                 ),
-
                                 const SizedBox(height: 4),
-
-                                LinearProgressIndicator(value: rate),
+                                LinearProgressIndicator(
+                                  value: item.progressPercent / 100,
+                                ),
                               ],
                             ),
                           );
