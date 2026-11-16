@@ -25,6 +25,14 @@ class SpotRepository {
     return await _db.getPrefectures();
   }
 
+  Future<List<String>> getPrefecturesByCategory(String category) async {
+    return await _db.getPrefecturesByCategory(category);
+  }
+
+  Future<List<String>> getCategoriesByPrefecture(String prefecture) async {
+    return await _db.getCategoriesByPrefecture(prefecture);
+  }
+
   Future<List<Spot>> getMissingSpotsByCategory(String category) async {
     return await _db.getMissingSpotsByCategory(category);
   }

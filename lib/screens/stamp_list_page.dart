@@ -60,7 +60,7 @@ class _StampListPageBody extends StatelessWidget {
                         )
                         .toList(),
 
-                    onChanged: (value) {
+                    onChanged: (value) async {
                       if (value != null) {
                         vm.setCategory(value);
                       }
@@ -89,9 +89,9 @@ class _StampListPageBody extends StatelessWidget {
                         )
                         .toList(),
 
-                    onChanged: (value) {
+                    onChanged: (value) async {
                       if (value != null) {
-                        vm.setPrefecture(value);
+                        await vm.setPrefecture(value);
                       }
                     },
                   ),

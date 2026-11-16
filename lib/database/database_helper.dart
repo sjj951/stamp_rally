@@ -294,7 +294,8 @@ class DatabaseHelper {
       );
     }
   }
-// 都道府県の一覧を取得する関数
+
+  // 都道府県の一覧を取得する関数
   Future<List<String>> getPrefectures() async {
     final db = await database;
 
@@ -323,6 +324,88 @@ class DatabaseHelper {
     }
 
     return prefectures;
+  }
+
+  // 都道府県の一覧を取得する関数（カテゴリー別）
+  Future<List<String>> getPrefecturesByCategory(String category) async {
+    final db = await database;
+
+    List<Map<String, Object?>> result;
+
+    if (category == 'すべて') {
+      result = await db.rawQuery('''
+      SELECT DISTINCT prefecture
+      FROM spots
+      ORDER BY prefecture
+    ''');
+    } else {
+      result = await db.rawQuery(
+        '''
+      SELECT DISTINCT prefecture
+      FROM spots
+      WHERE category = ?
+      ORDER BY prefecture
+    ''',
+        [category],
+      );
+    }
+
+    final prefectures = <String>['すべて'];
+
+    for (final row in result) {
+      final prefecture = row['prefecture']?.toString() ?? '';
+
+      if (prefecture.isNotEmpty) {
+        prefectures.add(prefecture);
+      }
+    }
+
+    return prefectures;
+  }
+
+  // カテゴリーの一覧を取得する関数（都道府県別）
+  Future<List<String>> getCategoriesByPrefecture(String prefecture) async {
+    final db = await database;
+
+    List<Map<String, Object?>> result;
+
+    if (prefecture == 'すべて') {
+      result = await db.rawQuery('''
+      SELECT DISTINCT category
+      FROM spots
+      ORDER BY category
+    ''');
+    } else {
+      result = await db.rawQuery(
+        '''
+      SELECT DISTINCT category
+      FROM spots
+      WHERE prefecture = ?
+      ORDER BY category
+    ''',
+        [prefecture],
+      );
+    }
+
+    final categories = <String>['すべて'];
+
+    bool hasEmpty = false;
+
+    for (final row in result) {
+      final category = row['category']?.toString() ?? '';
+
+      if (category.isEmpty) {
+        hasEmpty = true;
+      } else {
+        categories.add(category);
+      }
+    }
+
+    if (hasEmpty) {
+      categories.add('カテゴリ未設定');
+    }
+
+    return categories;
   }
 
   //スポット一覧を取得する関数

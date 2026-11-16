@@ -18,10 +18,13 @@ class StampListViewModel extends ChangeNotifier {
   List<String> categories = ['すべて'];
   List<String> prefectures = ['すべて'];
   String selectedPrefecture = 'すべて';
+
   Future<void> load() async {
     stamps = await repository.getAll();
     categories = await spotRepository.getCategories();
-    prefectures = await spotRepository.getPrefectures();
+    prefectures = await spotRepository.getPrefecturesByCategory(
+      selectedCategory,
+    );
 
     filter();
 
@@ -76,16 +79,32 @@ class StampListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCategory(String category) {
+  Future<void> setCategory(String category) async {
     selectedCategory = category;
+
+    //selectedPrefecture = 'すべて';
+
+    prefectures = await spotRepository.getPrefecturesByCategory(category);
+
+    if (!prefectures.contains(selectedPrefecture)) {
+      selectedPrefecture = 'すべて';
+    }
 
     filter();
 
     notifyListeners();
   }
 
-  void setPrefecture(String prefecture) {
+  Future<void> setPrefecture(String prefecture) async {
     selectedPrefecture = prefecture;
+
+    //selectedCategory = 'すべて';
+
+    categories = await spotRepository.getCategoriesByPrefecture(prefecture);
+
+    if (!categories.contains(selectedCategory)) {
+      selectedCategory = 'すべて';
+    }
 
     filter();
 
