@@ -173,7 +173,7 @@ class DatabaseHelper {
         'category': '城',
         'url': 'https://ueda-cb.gr.jp',
         'comment': '真田ゆかりの城',
-        'prefecture': '上田県',
+        'prefecture': '上田市',
       },
 
       {

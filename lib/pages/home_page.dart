@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/qr_scan_page.dart';
+import 'qr_scan_page.dart';
 import 'stamp_list_page.dart';
 import '../repositories/stamp_repository.dart';
 import '../repositories/spot_repository.dart';

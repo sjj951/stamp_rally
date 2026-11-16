@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/home_page.dart';
+import 'pages/home_page.dart';
 import '../database/database_helper.dart';
 
 import 'package:provider/provider.dart';
