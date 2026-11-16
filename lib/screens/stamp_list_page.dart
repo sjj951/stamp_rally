@@ -37,6 +37,7 @@ class _StampListPageBody extends StatelessWidget {
             value: vm.favoriteOnly,
             onChanged: vm.setFavoriteOnly,
           ),
+          if (vm.isLoadingFilter) const LinearProgressIndicator(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: Row(

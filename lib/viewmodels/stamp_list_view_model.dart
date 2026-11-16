@@ -4,6 +4,8 @@ import '../models/stamp.dart';
 import '../repositories/stamp_repository.dart';
 import '../repositories/spot_repository.dart';
 
+import 'package:async/async.dart';
+
 class StampListViewModel extends ChangeNotifier {
   final StampRepository repository = StampRepository();
   final SpotRepository spotRepository = SpotRepository();
@@ -18,6 +20,18 @@ class StampListViewModel extends ChangeNotifier {
   List<String> categories = ['すべて'];
   List<String> prefectures = ['すべて'];
   String selectedPrefecture = 'すべて';
+  int _requestId = 0;
+  CancelableOperation<List<String>>? _categoryOperation;
+  CancelableOperation<List<String>>? _prefectureOperation;
+  bool isLoadingFilter = false;
+
+  @override
+  void dispose() {
+    _categoryOperation?.cancel();
+    _prefectureOperation?.cancel();
+
+    super.dispose();
+  }
 
   Future<void> load() async {
     stamps = await repository.getAll();
@@ -79,36 +93,84 @@ class StampListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setCategory(String category) async {
-    selectedCategory = category;
+  Future<void> setCategory(String value) async {
+    final requestId = ++_requestId;
 
-    //selectedPrefecture = 'すべて';
-
-    prefectures = await spotRepository.getPrefecturesByCategory(category);
-
-    if (!prefectures.contains(selectedPrefecture)) {
-      selectedPrefecture = 'すべて';
-    }
-
-    filter();
-
+    isLoadingFilter = true;
     notifyListeners();
+
+    selectedCategory = value;
+
+    await _prefectureOperation?.cancel();
+
+    _prefectureOperation = CancelableOperation.fromFuture(
+      spotRepository.getPrefecturesByCategory(selectedCategory),
+    );
+
+    try {
+      final result = await _prefectureOperation!.valueOrCancellation();
+
+      if (result == null) {
+        return;
+      }
+
+      if (requestId != _requestId) {
+        return;
+      }
+
+      prefectures = result;
+
+      if (!prefectures.contains(selectedPrefecture)) {
+        selectedPrefecture = 'すべて';
+      }
+
+      filter();
+    } finally {
+      if (requestId == _requestId) {
+        isLoadingFilter = false;
+        notifyListeners();
+      }
+    }
   }
 
-  Future<void> setPrefecture(String prefecture) async {
-    selectedPrefecture = prefecture;
+  Future<void> setPrefecture(String value) async {
+    final requestId = ++_requestId;
 
-    //selectedCategory = 'すべて';
-
-    categories = await spotRepository.getCategoriesByPrefecture(prefecture);
-
-    if (!categories.contains(selectedCategory)) {
-      selectedCategory = 'すべて';
-    }
-
-    filter();
-
+    isLoadingFilter = true;
     notifyListeners();
+
+    selectedPrefecture = value;
+
+    await _categoryOperation?.cancel();
+
+    _categoryOperation = CancelableOperation.fromFuture(
+      spotRepository.getCategoriesByPrefecture(selectedPrefecture),
+    );
+
+    try {
+      final result = await _categoryOperation!.valueOrCancellation();
+
+      if (result == null) {
+        return;
+      }
+
+      if (requestId != _requestId) {
+        return;
+      }
+
+      categories = result;
+
+      if (!categories.contains(selectedCategory)) {
+        selectedCategory = 'すべて';
+      }
+
+      filter();
+    } finally {
+      if (requestId == _requestId) {
+        isLoadingFilter = false;
+        notifyListeners();
+      }
+    }
   }
 
   Future<void> deleteStamp(int id) async {
