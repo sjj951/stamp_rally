@@ -6,6 +6,8 @@ import '../repositories/spot_repository.dart';
 
 import 'package:async/async.dart';
 
+import '../models/filter_state.dart';
+
 class StampListViewModel extends ChangeNotifier {
   final StampRepository repository = StampRepository();
   final SpotRepository spotRepository = SpotRepository();
@@ -13,13 +15,11 @@ class StampListViewModel extends ChangeNotifier {
 
   List<Stamp> filteredStamps = [];
 
-  bool favoriteOnly = false;
+  FilterState filters = const FilterState();
 
-  String searchText = '';
-  String selectedCategory = 'すべて';
   List<String> categories = ['すべて'];
   List<String> prefectures = ['すべて'];
-  String selectedPrefecture = 'すべて';
+
   int _requestId = 0;
   CancelableOperation<List<String>>? _categoryOperation;
   CancelableOperation<List<String>>? _prefectureOperation;
@@ -69,8 +69,22 @@ class StampListViewModel extends ChangeNotifier {
     }).toList();
   }
 
+  String get searchText => filters.searchText;
+
+  bool get favoriteOnly => filters.favoriteOnly;
+
+  String get selectedCategory => filters.category;
+
+  String get selectedPrefecture => filters.prefecture;
+
   void setSearchText(String value) {
-    searchText = value;
+    final newState = filters.copyWith(searchText: value);
+
+    if (newState == filters) {
+      return;
+    }
+
+    filters = newState;
 
     filter();
 
@@ -78,7 +92,13 @@ class StampListViewModel extends ChangeNotifier {
   }
 
   void setFavoriteOnly(bool value) {
-    favoriteOnly = value;
+    final newState = filters.copyWith(favoriteOnly: value);
+
+    if (newState == filters) {
+      return;
+    }
+
+    filters = newState;
 
     filter();
 
@@ -86,7 +106,13 @@ class StampListViewModel extends ChangeNotifier {
   }
 
   void setSelectedCategory(String value) {
-    selectedCategory = value;
+    final newState = filters.copyWith(category: value);
+
+    if (newState == filters) {
+      return;
+    }
+
+    filters = newState;
 
     filter();
 
@@ -99,7 +125,13 @@ class StampListViewModel extends ChangeNotifier {
     isLoadingFilter = true;
     notifyListeners();
 
-    selectedCategory = value;
+    final newState = filters.copyWith(category: value);
+
+    if (newState == filters) {
+      return;
+    }
+
+    filters = newState;
 
     await _prefectureOperation?.cancel();
 
@@ -121,7 +153,7 @@ class StampListViewModel extends ChangeNotifier {
       prefectures = result;
 
       if (!prefectures.contains(selectedPrefecture)) {
-        selectedPrefecture = 'すべて';
+        filters = filters.copyWith(prefecture: 'すべて');
       }
 
       filter();
@@ -139,7 +171,13 @@ class StampListViewModel extends ChangeNotifier {
     isLoadingFilter = true;
     notifyListeners();
 
-    selectedPrefecture = value;
+    final newState = filters.copyWith(prefecture: value);
+
+    if (newState == filters) {
+      return;
+    }
+
+    filters = newState;
 
     await _categoryOperation?.cancel();
 
@@ -161,7 +199,7 @@ class StampListViewModel extends ChangeNotifier {
       categories = result;
 
       if (!categories.contains(selectedCategory)) {
-        selectedCategory = 'すべて';
+        filters = filters.copyWith(category: 'すべて');
       }
 
       filter();
