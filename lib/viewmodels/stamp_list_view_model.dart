@@ -61,9 +61,9 @@ class StampListViewModel extends ChangeNotifier {
 
       final matchPrefecture = selectedPrefecture == 'すべて'
           ? true
-          : selectedPrefecture == '都道府県未設定';
-      //? stamp.prefecture.isEmpty
-      //: stamp.prefecture == selectedPrefecture;
+          : selectedPrefecture == '都道府県未設定'
+          ? stamp.prefecture.isEmpty
+          : stamp.prefecture == selectedPrefecture;
 
       return matchName && matchFavorite && matchCategory && matchPrefecture;
     }).toList();

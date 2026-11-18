@@ -421,7 +421,13 @@ class DatabaseHelper {
   Future<int> insertSpot(Spot spot) async {
     final db = await database;
 
-    return await db.insert('spots', spot.toMap());
+    return await db.insert('spots', {
+      'spot_name': spot.spotName,
+      'category': spot.category,
+      'prefecture': spot.prefecture,
+      'url': spot.url,
+      'comment': spot.comment,
+    });
   }
 
   // 指定されたIDのスポットを取得する関数

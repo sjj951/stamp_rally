@@ -1,79 +1,43 @@
-class Stamp {
-  final int? id;
-  final int spotId;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  final String spotName;
-  final String category;
-  final String url;
-  final String comment;
+part 'stamp.freezed.dart';
 
-  final String? imagePath;
+@freezed
+abstract class Stamp with _$Stamp {
+  const factory Stamp({
+    int? id,
 
-  final int favorite;
+    required int spotId,
 
-  final String scanDate;
+    required String spotName,
 
-  const Stamp({
-    this.id,
-    required this.spotId,
-    required this.spotName,
-    required this.category,
-    required this.url,
-    required this.comment,
-    required this.scanDate,
-    this.imagePath,
-    this.favorite = 0,
-  });
+    @Default('') String category,
+
+    @Default('') String prefecture,
+
+    @Default('') String url,
+
+    @Default('') String comment,
+
+    String? imagePath,
+
+    @Default(0) int favorite,
+
+    required String scanDate,
+  }) = _Stamp;
 
   factory Stamp.fromMap(Map<String, dynamic> map) {
     return Stamp(
-      id: map['id'],
-      spotId: map['spot_id'],
-      spotName: map['spot_name'],
-      category: map['category'] ?? '',
-      url: map['url'] ?? '',
-      comment: map['comment'] ?? '',
-      imagePath: map['image_path'],
-      favorite: map['favorite'] ?? 0,
-      scanDate: map['scan_date'],
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'spot_id': spotId,
-      'spot_name': spotName,
-      'category': category,
-      'url': url,
-      'comment': comment,
-      'image_path': imagePath,
-      'favorite': favorite,
-      'scan_date': scanDate,
-    };
-  }
-
-  Stamp copyWith({
-    int? id,
-    int? spotId,
-    String? spotName,
-    String? category,
-    String? url,
-    String? comment,
-    String? imagePath,
-    int? favorite,
-    String? scanDate,
-  }) {
-    return Stamp(
-      id: id ?? this.id,
-      spotId: spotId ?? this.spotId,
-      spotName: spotName ?? this.spotName,
-      category: category ?? this.category,
-      url: url ?? this.url,
-      comment: comment ?? this.comment,
-      imagePath: imagePath ?? this.imagePath,
-      favorite: favorite ?? this.favorite,
-      scanDate: scanDate ?? this.scanDate,
+      id: map['id'] as int?,
+      spotId: map['spot_id'] as int,
+      spotName: map['spot_name'] as String,
+      category: map['category']?.toString() ?? '',
+      prefecture: map['prefecture']?.toString() ?? '',
+      url: map['url']?.toString() ?? '',
+      comment: map['comment']?.toString() ?? '',
+      imagePath: map['image_path']?.toString(),
+      favorite: map['favorite'] as int? ?? 0,
+      scanDate: map['scan_date'] as String,
     );
   }
 }

@@ -1,39 +1,34 @@
-class Spot {
-  final int id;
-  final String spotName;
-  final String category;
-  final String prefecture;
-  final String? url;
-  final String? comment;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const Spot({
-    required this.id,
-    required this.spotName,
-    required this.category,
-    required this.prefecture,
-    this.url,
-    this.comment,
-  });
+part 'spot.freezed.dart';
+
+@freezed
+abstract class Spot with _$Spot {
+  const factory Spot({
+    int? id,
+
+    required int spotId,
+
+    required String spotName,
+
+    @Default('') String category,
+
+    @Default('') String prefecture,
+
+    @Default('') String url,
+
+    @Default('') String comment,
+  }) = _Spot;
 
   factory Spot.fromMap(Map<String, dynamic> map) {
     return Spot(
       id: map['id'],
+      spotId: map['spot_id'],
       spotName: map['spot_name'],
       category: map['category'],
       prefecture: map['prefecture'],
       url: map['url'],
       comment: map['comment'],
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'spot_name': spotName,
-      'category': category,
-      'prefecture': prefecture,
-      'url': url,
-      'comment': comment,
-    };
   }
 }

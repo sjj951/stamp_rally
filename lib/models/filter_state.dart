@@ -1,60 +1,16 @@
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-@immutable
-class FilterState {
-  final String searchText;
+part 'filter_state.freezed.dart';
 
-  final bool favoriteOnly;
+@freezed
+abstract class FilterState with _$FilterState {
+  const factory FilterState({
+    @Default('') String searchText,
 
-  final String category;
+    @Default(false) bool favoriteOnly,
 
-  final String prefecture;
+    @Default('すべて') String category,
 
-  const FilterState({
-    this.searchText = '',
-    this.favoriteOnly = false,
-    this.category = 'すべて',
-    this.prefecture = 'すべて',
-  });
-
-  FilterState copyWith({
-    String? searchText,
-    bool? favoriteOnly,
-    String? category,
-    String? prefecture,
-  }) {
-    return FilterState(
-      searchText: searchText ?? this.searchText,
-
-      favoriteOnly: favoriteOnly ?? this.favoriteOnly,
-
-      category: category ?? this.category,
-
-      prefecture: prefecture ?? this.prefecture,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is FilterState &&
-            searchText == other.searchText &&
-            favoriteOnly == other.favoriteOnly &&
-            category == other.category &&
-            prefecture == other.prefecture;
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(searchText, favoriteOnly, category, prefecture);
-
-  @override
-  String toString() {
-    return 'FilterState('
-        'searchText: $searchText, '
-        'favoriteOnly: $favoriteOnly, '
-        'category: $category, '
-        'prefecture: $prefecture'
-        ')';
-  }
+    @Default('すべて') String prefecture,
+  }) = _FilterState;
 }
