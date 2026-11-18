@@ -12,16 +12,19 @@ part of 'stamp.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$Stamp {
 
- int? get id; int get spotId; String get spotName; String get category; String get prefecture; String get url; String get comment; String? get imagePath; int get favorite; String get scanDate;
+ int? get id;@JsonKey(name: 'spot_id') int get spotId;@JsonKey(name: 'spot_name') String get spotName; String get category; String get prefecture; String get url; String get comment;@JsonKey(name: 'image_path') String? get imagePath; int get favorite;@JsonKey(name: 'scan_date') String get scanDate;
 /// Create a copy of Stamp
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $StampCopyWith<Stamp> get copyWith => _$StampCopyWithImpl<Stamp>(this as Stamp, _$identity);
 
+  /// Serializes this Stamp to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -30,7 +33,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is Stamp&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.spotId, _this.spotId) || other.spotId == _this.spotId)&&(identical(other.spotName, _this.spotName) || other.spotName == _this.spotName)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.prefecture, _this.prefecture) || other.prefecture == _this.prefecture)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.comment, _this.comment) || other.comment == _this.comment)&&(identical(other.imagePath, _this.imagePath) || other.imagePath == _this.imagePath)&&(identical(other.favorite, _this.favorite) || other.favorite == _this.favorite)&&(identical(other.scanDate, _this.scanDate) || other.scanDate == _this.scanDate));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Stamp;
@@ -51,7 +54,7 @@ abstract mixin class $StampCopyWith<$Res>  {
   factory $StampCopyWith(Stamp value, $Res Function(Stamp) _then) = _$StampCopyWithImpl;
 @useResult
 $Res call({
- int? id, int spotId, String spotName, String category, String prefecture, String url, String comment, String? imagePath, int favorite, String scanDate
+ int? id,@JsonKey(name: 'spot_id') int spotId,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String url, String comment,@JsonKey(name: 'image_path') String? imagePath, int favorite,@JsonKey(name: 'scan_date') String scanDate
 });
 
 
@@ -165,7 +168,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int spotId,  String spotName,  String category,  String prefecture,  String url,  String comment,  String? imagePath,  int favorite,  String scanDate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath,  int favorite, @JsonKey(name: 'scan_date')  String scanDate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Stamp() when $default != null:
 return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment,_that.imagePath,_that.favorite,_that.scanDate);case _:
@@ -186,7 +189,7 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int spotId,  String spotName,  String category,  String prefecture,  String url,  String comment,  String? imagePath,  int favorite,  String scanDate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath,  int favorite, @JsonKey(name: 'scan_date')  String scanDate)  $default,) {final _that = this;
 switch (_that) {
 case _Stamp():
 return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment,_that.imagePath,_that.favorite,_that.scanDate);case _:
@@ -206,7 +209,7 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int spotId,  String spotName,  String category,  String prefecture,  String url,  String comment,  String? imagePath,  int favorite,  String scanDate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath,  int favorite, @JsonKey(name: 'scan_date')  String scanDate)?  $default,) {final _that = this;
 switch (_that) {
 case _Stamp() when $default != null:
 return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment,_that.imagePath,_that.favorite,_that.scanDate);case _:
@@ -218,22 +221,22 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 }
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _Stamp implements Stamp {
-  const _Stamp({this.id, required this.spotId, required this.spotName, this.category = '', this.prefecture = '', this.url = '', this.comment = '', this.imagePath, this.favorite = 0, required this.scanDate});
-  
+  const _Stamp({this.id, @JsonKey(name: 'spot_id') required this.spotId, @JsonKey(name: 'spot_name') required this.spotName, this.category = '', this.prefecture = '', this.url = '', this.comment = '', @JsonKey(name: 'image_path') this.imagePath, this.favorite = 0, @JsonKey(name: 'scan_date') required this.scanDate});
+  factory _Stamp.fromJson(Map<String, dynamic> json) => _$StampFromJson(json);
 
 @override final  int? id;
-@override final  int spotId;
-@override final  String spotName;
+@override@JsonKey(name: 'spot_id') final  int spotId;
+@override@JsonKey(name: 'spot_name') final  String spotName;
 @override@JsonKey() final  String category;
 @override@JsonKey() final  String prefecture;
 @override@JsonKey() final  String url;
 @override@JsonKey() final  String comment;
-@override final  String? imagePath;
+@override@JsonKey(name: 'image_path') final  String? imagePath;
 @override@JsonKey() final  int favorite;
-@override final  String scanDate;
+@override@JsonKey(name: 'scan_date') final  String scanDate;
 
 /// Create a copy of Stamp
 /// with the given fields replaced by the non-null parameter values.
@@ -241,14 +244,17 @@ class _Stamp implements Stamp {
 @pragma('vm:prefer-inline')
 _$StampCopyWith<_Stamp> get copyWith => __$StampCopyWithImpl<_Stamp>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$StampToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
     return identical(this, other) || (other.runtimeType == runtimeType&&other is _Stamp&&(identical(other.id, id) || other.id == id)&&(identical(other.spotId, spotId) || other.spotId == spotId)&&(identical(other.spotName, spotName) || other.spotName == spotName)&&(identical(other.category, category) || other.category == category)&&(identical(other.prefecture, prefecture) || other.prefecture == prefecture)&&(identical(other.url, url) || other.url == url)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.imagePath, imagePath) || other.imagePath == imagePath)&&(identical(other.favorite, favorite) || other.favorite == favorite)&&(identical(other.scanDate, scanDate) || other.scanDate == scanDate));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
     return Object.hash(runtimeType,id,spotId,spotName,category,prefecture,url,comment,imagePath,favorite,scanDate);
@@ -267,7 +273,7 @@ abstract mixin class _$StampCopyWith<$Res> implements $StampCopyWith<$Res> {
   factory _$StampCopyWith(_Stamp value, $Res Function(_Stamp) _then) = __$StampCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, int spotId, String spotName, String category, String prefecture, String url, String comment, String? imagePath, int favorite, String scanDate
+ int? id,@JsonKey(name: 'spot_id') int spotId,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String url, String comment,@JsonKey(name: 'image_path') String? imagePath, int favorite,@JsonKey(name: 'scan_date') String scanDate
 });
 
 

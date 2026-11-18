@@ -12,35 +12,38 @@ part of 'spot.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$Spot {
 
- int? get id; int get spotId; String get spotName; String get category; String get prefecture; String get url; String get comment;
+ int get id;@JsonKey(name: 'spot_name') String get spotName; String get category; String get prefecture; String? get url; String? get comment;
 /// Create a copy of Spot
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $SpotCopyWith<Spot> get copyWith => _$SpotCopyWithImpl<Spot>(this as Spot, _$identity);
 
+  /// Serializes this Spot to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
   final _this = this as Spot;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Spot&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.spotId, _this.spotId) || other.spotId == _this.spotId)&&(identical(other.spotName, _this.spotName) || other.spotName == _this.spotName)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.prefecture, _this.prefecture) || other.prefecture == _this.prefecture)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.comment, _this.comment) || other.comment == _this.comment));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Spot&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.spotName, _this.spotName) || other.spotName == _this.spotName)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.prefecture, _this.prefecture) || other.prefecture == _this.prefecture)&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.comment, _this.comment) || other.comment == _this.comment));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Spot;
-  return Object.hash(runtimeType,_this.id,_this.spotId,_this.spotName,_this.category,_this.prefecture,_this.url,_this.comment);
+  return Object.hash(runtimeType,_this.id,_this.spotName,_this.category,_this.prefecture,_this.url,_this.comment);
 }
 
 @override
 String toString() {
   final _this = this as Spot;
-  return 'Spot(id: ${_this.id}, spotId: ${_this.spotId}, spotName: ${_this.spotName}, category: ${_this.category}, prefecture: ${_this.prefecture}, url: ${_this.url}, comment: ${_this.comment})';
+  return 'Spot(id: ${_this.id}, spotName: ${_this.spotName}, category: ${_this.category}, prefecture: ${_this.prefecture}, url: ${_this.url}, comment: ${_this.comment})';
 }
 
 
@@ -51,7 +54,7 @@ abstract mixin class $SpotCopyWith<$Res>  {
   factory $SpotCopyWith(Spot value, $Res Function(Spot) _then) = _$SpotCopyWithImpl;
 @useResult
 $Res call({
- int? id, int spotId, String spotName, String category, String prefecture, String url, String comment
+ int id,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String? url, String? comment
 });
 
 
@@ -68,16 +71,15 @@ class _$SpotCopyWithImpl<$Res>
 
 /// Create a copy of Spot
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? spotId = null,Object? spotName = null,Object? category = null,Object? prefecture = null,Object? url = null,Object? comment = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? spotName = null,Object? category = null,Object? prefecture = null,Object? url = freezed,Object? comment = freezed,}) {
   return _then(Spot(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,spotId: null == spotId ? _self.spotId : spotId // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,spotName: null == spotName ? _self.spotName : spotName // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,prefecture: null == prefecture ? _self.prefecture : prefecture // ignore: cast_nullable_to_non_nullable
-as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
-as String,
+as String,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -162,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  int spotId,  String spotName,  String category,  String prefecture,  String url,  String comment)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String? url,  String? comment)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Spot() when $default != null:
-return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment);case _:
+return $default(_that.id,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment);case _:
   return orElse();
 
 }
@@ -183,10 +185,10 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  int spotId,  String spotName,  String category,  String prefecture,  String url,  String comment)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String? url,  String? comment)  $default,) {final _that = this;
 switch (_that) {
 case _Spot():
-return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment);case _:
+return $default(_that.id,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +205,10 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  int spotId,  String spotName,  String category,  String prefecture,  String url,  String comment)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String? url,  String? comment)?  $default,) {final _that = this;
 switch (_that) {
 case _Spot() when $default != null:
-return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment);case _:
+return $default(_that.id,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment);case _:
   return null;
 
 }
@@ -215,19 +217,18 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 }
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _Spot implements Spot {
-  const _Spot({this.id, required this.spotId, required this.spotName, this.category = '', this.prefecture = '', this.url = '', this.comment = ''});
-  
+  const _Spot({required this.id, @JsonKey(name: 'spot_name') required this.spotName, this.category = '', this.prefecture = '', this.url, this.comment});
+  factory _Spot.fromJson(Map<String, dynamic> json) => _$SpotFromJson(json);
 
-@override final  int? id;
-@override final  int spotId;
-@override final  String spotName;
+@override final  int id;
+@override@JsonKey(name: 'spot_name') final  String spotName;
 @override@JsonKey() final  String category;
 @override@JsonKey() final  String prefecture;
-@override@JsonKey() final  String url;
-@override@JsonKey() final  String comment;
+@override final  String? url;
+@override final  String? comment;
 
 /// Create a copy of Spot
 /// with the given fields replaced by the non-null parameter values.
@@ -235,22 +236,25 @@ class _Spot implements Spot {
 @pragma('vm:prefer-inline')
 _$SpotCopyWith<_Spot> get copyWith => __$SpotCopyWithImpl<_Spot>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$SpotToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Spot&&(identical(other.id, id) || other.id == id)&&(identical(other.spotId, spotId) || other.spotId == spotId)&&(identical(other.spotName, spotName) || other.spotName == spotName)&&(identical(other.category, category) || other.category == category)&&(identical(other.prefecture, prefecture) || other.prefecture == prefecture)&&(identical(other.url, url) || other.url == url)&&(identical(other.comment, comment) || other.comment == comment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Spot&&(identical(other.id, id) || other.id == id)&&(identical(other.spotName, spotName) || other.spotName == spotName)&&(identical(other.category, category) || other.category == category)&&(identical(other.prefecture, prefecture) || other.prefecture == prefecture)&&(identical(other.url, url) || other.url == url)&&(identical(other.comment, comment) || other.comment == comment));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,spotId,spotName,category,prefecture,url,comment);
+    return Object.hash(runtimeType,id,spotName,category,prefecture,url,comment);
 }
 
 @override
 String toString() {
-    return 'Spot(id: $id, spotId: $spotId, spotName: $spotName, category: $category, prefecture: $prefecture, url: $url, comment: $comment)';
+    return 'Spot(id: $id, spotName: $spotName, category: $category, prefecture: $prefecture, url: $url, comment: $comment)';
 }
 
 
@@ -261,7 +265,7 @@ abstract mixin class _$SpotCopyWith<$Res> implements $SpotCopyWith<$Res> {
   factory _$SpotCopyWith(_Spot value, $Res Function(_Spot) _then) = __$SpotCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, int spotId, String spotName, String category, String prefecture, String url, String comment
+ int id,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String? url, String? comment
 });
 
 
@@ -278,16 +282,15 @@ class __$SpotCopyWithImpl<$Res>
 
 /// Create a copy of Spot
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? spotId = null,Object? spotName = null,Object? category = null,Object? prefecture = null,Object? url = null,Object? comment = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? spotName = null,Object? category = null,Object? prefecture = null,Object? url = freezed,Object? comment = freezed,}) {
   return _then(_Spot(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,spotId: null == spotId ? _self.spotId : spotId // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,spotName: null == spotName ? _self.spotName : spotName // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,prefecture: null == prefecture ? _self.prefecture : prefecture // ignore: cast_nullable_to_non_nullable
-as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
-as String,
+as String,url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

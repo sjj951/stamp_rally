@@ -13,13 +13,7 @@ class StampRepository {
   }
 
   Future<void> insert(Stamp stamp) async {
-    await _db.insertStamp(
-      spotId: stamp.spotId,
-      spotName: stamp.spotName,
-      category: stamp.category,
-      url: stamp.url,
-      comment: stamp.comment,
-    );
+    await _db.insertStamp(stamp);
   }
 
   Future<void> delete(int id) async {

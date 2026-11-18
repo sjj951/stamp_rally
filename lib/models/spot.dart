@@ -1,34 +1,23 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'spot.freezed.dart';
+part 'spot.g.dart';
 
 @freezed
 abstract class Spot with _$Spot {
   const factory Spot({
-    int? id,
+    required int id,
 
-    required int spotId,
-
-    required String spotName,
+    @JsonKey(name: 'spot_name') required String spotName,
 
     @Default('') String category,
 
     @Default('') String prefecture,
 
-    @Default('') String url,
+    String? url,
 
-    @Default('') String comment,
+    String? comment,
   }) = _Spot;
 
-  factory Spot.fromMap(Map<String, dynamic> map) {
-    return Spot(
-      id: map['id'],
-      spotId: map['spot_id'],
-      spotName: map['spot_name'],
-      category: map['category'],
-      prefecture: map['prefecture'],
-      url: map['url'],
-      comment: map['comment'],
-    );
-  }
+  factory Spot.fromJson(Map<String, dynamic> json) => _$SpotFromJson(json);
 }

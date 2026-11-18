@@ -414,20 +414,14 @@ class DatabaseHelper {
 
     final result = await db.query('spots', orderBy: 'category, spot_name');
 
-    return result.map((e) => Spot.fromMap(e)).toList();
+    return result.map((e) => Spot.fromJson(e)).toList();
   }
 
   //スポットを挿入する関数
   Future<int> insertSpot(Spot spot) async {
     final db = await database;
 
-    return await db.insert('spots', {
-      'spot_name': spot.spotName,
-      'category': spot.category,
-      'prefecture': spot.prefecture,
-      'url': spot.url,
-      'comment': spot.comment,
-    });
+    return await db.insert('spots', spot.toJson());
   }
 
   // 指定されたIDのスポットを取得する関数
@@ -440,7 +434,7 @@ class DatabaseHelper {
       return null;
     }
 
-    return Spot.fromMap(result.first);
+    return Spot.fromJson(result.first);
   }
 
   // スタンプが存在しないスポットを取得する関数
@@ -458,7 +452,7 @@ class DatabaseHelper {
              spots.spot_name
   ''');
 
-    return result.map(Spot.fromMap).toList();
+    return result.map(Spot.fromJson).toList();
   }
 
   // スポットのカテゴリーごとの件数を取得する関数
@@ -509,7 +503,7 @@ class DatabaseHelper {
   ''',
       [category],
     );
-    return result.map(Spot.fromMap).toList();
+    return result.map(Spot.fromJson).toList();
   }
 
   //スポットのカテゴリーごとの件数を取得する関数
@@ -577,7 +571,7 @@ class DatabaseHelper {
     ORDER BY s.category
   ''');
 
-    return result.map(CategoryProgress.fromMap).toList();
+    return result.map(CategoryProgress.fromJson).toList();
   }
 
   //スタンプのカテゴリーごとの件数を取得する関数
@@ -663,25 +657,10 @@ class DatabaseHelper {
   }
 
   //スタンプの挿入
-  Future<void> insertStamp({
-    required int spotId,
-    required String spotName,
-    required String category,
-    required String url,
-    required String comment,
-    String? imagePath,
-  }) async {
+  Future<void> insertStamp(Stamp stamp) async {
     final db = await database;
 
-    await db.insert('stamps', {
-      'spot_id': spotId,
-      'spot_name': spotName,
-      'category': category,
-      'url': url,
-      'comment': comment,
-      'image_path': imagePath,
-      'scan_date': DateTime.now().toString(),
-    });
+    await db.insert('stamps', stamp.toJson());
   }
 
   //スタンプの取得
@@ -693,6 +672,6 @@ class DatabaseHelper {
       orderBy: 'favorite DESC, scan_date DESC',
     );
 
-    return result.map((e) => Stamp.fromMap(e)).toList();
+    return result.map((e) => Stamp.fromJson(e)).toList();
   }
 }

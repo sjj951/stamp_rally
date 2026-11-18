@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'category_progress.freezed.dart';
+part 'category_progress.g.dart';
 
 enum BadgeRank { bronze, silver, gold, complete }
 
-class CategoryProgress {
-  final String category;
-  final int totalCount;
-  final int acquiredCount;
+@freezed
+abstract class CategoryProgress with _$CategoryProgress {
+  const CategoryProgress._();
+  const factory CategoryProgress({
+    @JsonKey(name: 'category') required String category,
+    @JsonKey(name: 'total_count') required int totalCount,
+    @JsonKey(name: 'acquired_count') required int acquiredCount,
+  }) = _CategoryProgress;
 
-  const CategoryProgress({
-    required this.category,
-    required this.totalCount,
-    required this.acquiredCount,
-  });
-
-  factory CategoryProgress.fromMap(Map<String, dynamic> map) {
-    return CategoryProgress(
-      category: map['category'] as String,
-      totalCount: map['total_count'] as int,
-      acquiredCount: map['acquired_count'] as int,
-    );
-  }
+  factory CategoryProgress.fromJson(Map<String, dynamic> json) =>
+      _$CategoryProgressFromJson(json);
 
   double get progressRate {
     if (totalCount == 0) {
