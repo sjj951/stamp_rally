@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Stamp {
 
- int? get id;@JsonKey(name: 'spot_id') int get spotId;@JsonKey(name: 'spot_name') String get spotName; String get category; String get prefecture; String get url; String get comment;@JsonKey(name: 'image_path') String? get imagePath; int get favorite;@JsonKey(name: 'scan_date') String get scanDate;
+ int? get id;@JsonKey(name: 'spot_id') int get spotId;@JsonKey(name: 'spot_name') String get spotName; String get category; String get prefecture; String get url; String get comment;@JsonKey(name: 'image_path') String? get imagePath;@SqliteBoolConverter() bool get favorite;@JsonKey(name: 'scan_date')@SqliteDateTimeConverter() DateTime get scanDate;
 /// Create a copy of Stamp
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $StampCopyWith<$Res>  {
   factory $StampCopyWith(Stamp value, $Res Function(Stamp) _then) = _$StampCopyWithImpl;
 @useResult
 $Res call({
- int? id,@JsonKey(name: 'spot_id') int spotId,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String url, String comment,@JsonKey(name: 'image_path') String? imagePath, int favorite,@JsonKey(name: 'scan_date') String scanDate
+ int? id,@JsonKey(name: 'spot_id') int spotId,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String url, String comment,@JsonKey(name: 'image_path') String? imagePath,@SqliteBoolConverter() bool favorite,@JsonKey(name: 'scan_date')@SqliteDateTimeConverter() DateTime scanDate
 });
 
 
@@ -82,8 +82,8 @@ as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nul
 as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String,imagePath: freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String?,favorite: null == favorite ? _self.favorite : favorite // ignore: cast_nullable_to_non_nullable
-as int,scanDate: null == scanDate ? _self.scanDate : scanDate // ignore: cast_nullable_to_non_nullable
-as String,
+as bool,scanDate: null == scanDate ? _self.scanDate : scanDate // ignore: cast_nullable_to_non_nullable
+as DateTime,
   ));
 }
 
@@ -168,7 +168,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath,  int favorite, @JsonKey(name: 'scan_date')  String scanDate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath, @SqliteBoolConverter()  bool favorite, @JsonKey(name: 'scan_date')@SqliteDateTimeConverter()  DateTime scanDate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Stamp() when $default != null:
 return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment,_that.imagePath,_that.favorite,_that.scanDate);case _:
@@ -189,7 +189,7 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath,  int favorite, @JsonKey(name: 'scan_date')  String scanDate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath, @SqliteBoolConverter()  bool favorite, @JsonKey(name: 'scan_date')@SqliteDateTimeConverter()  DateTime scanDate)  $default,) {final _that = this;
 switch (_that) {
 case _Stamp():
 return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment,_that.imagePath,_that.favorite,_that.scanDate);case _:
@@ -209,7 +209,7 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath,  int favorite, @JsonKey(name: 'scan_date')  String scanDate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id, @JsonKey(name: 'spot_id')  int spotId, @JsonKey(name: 'spot_name')  String spotName,  String category,  String prefecture,  String url,  String comment, @JsonKey(name: 'image_path')  String? imagePath, @SqliteBoolConverter()  bool favorite, @JsonKey(name: 'scan_date')@SqliteDateTimeConverter()  DateTime scanDate)?  $default,) {final _that = this;
 switch (_that) {
 case _Stamp() when $default != null:
 return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefecture,_that.url,_that.comment,_that.imagePath,_that.favorite,_that.scanDate);case _:
@@ -224,7 +224,7 @@ return $default(_that.id,_that.spotId,_that.spotName,_that.category,_that.prefec
 @JsonSerializable()
 
 class _Stamp implements Stamp {
-  const _Stamp({this.id, @JsonKey(name: 'spot_id') required this.spotId, @JsonKey(name: 'spot_name') required this.spotName, this.category = '', this.prefecture = '', this.url = '', this.comment = '', @JsonKey(name: 'image_path') this.imagePath, this.favorite = 0, @JsonKey(name: 'scan_date') required this.scanDate});
+  const _Stamp({this.id, @JsonKey(name: 'spot_id') required this.spotId, @JsonKey(name: 'spot_name') required this.spotName, this.category = '', this.prefecture = '', this.url = '', this.comment = '', @JsonKey(name: 'image_path') this.imagePath, @SqliteBoolConverter() this.favorite = false, @JsonKey(name: 'scan_date')@SqliteDateTimeConverter() required this.scanDate});
   factory _Stamp.fromJson(Map<String, dynamic> json) => _$StampFromJson(json);
 
 @override final  int? id;
@@ -235,8 +235,8 @@ class _Stamp implements Stamp {
 @override@JsonKey() final  String url;
 @override@JsonKey() final  String comment;
 @override@JsonKey(name: 'image_path') final  String? imagePath;
-@override@JsonKey() final  int favorite;
-@override@JsonKey(name: 'scan_date') final  String scanDate;
+@override@JsonKey()@SqliteBoolConverter() final  bool favorite;
+@override@JsonKey(name: 'scan_date')@SqliteDateTimeConverter() final  DateTime scanDate;
 
 /// Create a copy of Stamp
 /// with the given fields replaced by the non-null parameter values.
@@ -273,7 +273,7 @@ abstract mixin class _$StampCopyWith<$Res> implements $StampCopyWith<$Res> {
   factory _$StampCopyWith(_Stamp value, $Res Function(_Stamp) _then) = __$StampCopyWithImpl;
 @override @useResult
 $Res call({
- int? id,@JsonKey(name: 'spot_id') int spotId,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String url, String comment,@JsonKey(name: 'image_path') String? imagePath, int favorite,@JsonKey(name: 'scan_date') String scanDate
+ int? id,@JsonKey(name: 'spot_id') int spotId,@JsonKey(name: 'spot_name') String spotName, String category, String prefecture, String url, String comment,@JsonKey(name: 'image_path') String? imagePath,@SqliteBoolConverter() bool favorite,@JsonKey(name: 'scan_date')@SqliteDateTimeConverter() DateTime scanDate
 });
 
 
@@ -301,8 +301,8 @@ as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nul
 as String,comment: null == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String,imagePath: freezed == imagePath ? _self.imagePath : imagePath // ignore: cast_nullable_to_non_nullable
 as String?,favorite: null == favorite ? _self.favorite : favorite // ignore: cast_nullable_to_non_nullable
-as int,scanDate: null == scanDate ? _self.scanDate : scanDate // ignore: cast_nullable_to_non_nullable
-as String,
+as bool,scanDate: null == scanDate ? _self.scanDate : scanDate // ignore: cast_nullable_to_non_nullable
+as DateTime,
   ));
 }
 

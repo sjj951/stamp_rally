@@ -10,10 +10,10 @@ class StampDetailViewModel extends ChangeNotifier {
 
   StampDetailViewModel(this.stamp);
 
-  bool get isFavorite => stamp.favorite == 1;
+  bool get isFavorite => stamp.favorite == true;
 
   Future<void> toggleFavorite() async {
-    final newValue = stamp.favorite == 0;
+    final newValue = stamp.favorite == false;
 
     await repository.updateFavorite(stamp.id!, newValue);
 

@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../converters/sqlite_bool_converter.dart';
+import '../converters/sqlite_datetime_converter.dart';
 part 'stamp.freezed.dart';
 part 'stamp.g.dart';
 
@@ -21,11 +23,13 @@ abstract class Stamp with _$Stamp {
     @Default('') String comment,
 
     @JsonKey(name: 'image_path') String? imagePath,
+    @SqliteBoolConverter() @Default(false) bool favorite,
 
-    @Default(0) int favorite,
-
-    @JsonKey(name: 'scan_date') required String scanDate,
+    @JsonKey(name: 'scan_date')
+    @SqliteDateTimeConverter()
+    required DateTime scanDate,
   }) = _Stamp;
 
   factory Stamp.fromJson(Map<String, dynamic> json) => _$StampFromJson(json);
+  factory Stamp.fromMap(Map<String, dynamic> map) => Stamp.fromJson(map);
 }

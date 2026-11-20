@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import '../models/stamp.dart';
 import '../repositories/stamp_repository.dart';
+import '../models/repository_result.dart';
 
 class QrScanPage extends StatefulWidget {
   const QrScanPage({super.key});
@@ -34,9 +35,12 @@ class _QrScanPageState extends State<QrScanPage> {
           try {
             final data = jsonDecode(code);
 
-            final exists = await StampRepository().exists(data['spot_id']);
-
-            if (exists) {
+            final result = await StampRepository().exists(data['spot_id']);
+            final bool exists = result.when(
+              success: (value) => value,
+              failure: (_) => false,
+            );
+            if (exists == true) {
               if (context.mounted) {
                 ScaffoldMessenger.of(
                   context,
@@ -55,7 +59,7 @@ class _QrScanPageState extends State<QrScanPage> {
                 category: data['category'],
                 url: data['url'],
                 comment: data['comment'],
-                scanDate: DateTime.now().toIso8601String(),
+                scanDate: DateTime.now(),
               ),
             );
 

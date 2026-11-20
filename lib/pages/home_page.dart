@@ -10,6 +10,7 @@ import '../models/stamp.dart';
 import '../models/category_progress.dart';
 // cspell:ignore viewmodels
 import '../viewmodels/home_view_model.dart';
+import '../models/repository_result.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,11 +20,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //int stampCount = 0;
+  int stampCount = 0;
   static const int totalSpots = 50;
   bool hasShownCompleteDialog = false;
   late ConfettiController _confettiController;
   List<CategoryProgress> categoryProgress = [];
+  String? errorMessage;
   @override
   void initState() {
     super.initState();
@@ -47,19 +49,32 @@ class _HomePageState extends State<HomePage> {
   Future<void> loadCategoryProgress() async {
     final result = await SpotRepository().getCategoryProgress();
     setState(() {
-      categoryProgress = result;
+      result.when(
+        success: (categoryProgress) {
+          this.categoryProgress = categoryProgress;
+        },
+        failure: (message) {
+          errorMessage = message;
+        },
+      );
     });
   }
 
   //データベースからスタンプの件数を取得して更新する関数
   Future<void> loadCount() async {
-    final count = await StampRepository().getCount();
-
+    final result = await StampRepository().getCount();
     setState(() {
-      //stampCount = count;
+      result.when(
+        success: (stampCount) {
+          this.stampCount = stampCount;
+        },
+        failure: (message) {
+          errorMessage = message;
+        },
+      );
     });
 
-    if (count >= totalSpots && !hasShownCompleteDialog && mounted) {
+    if (stampCount >= totalSpots && !hasShownCompleteDialog && mounted) {
       hasShownCompleteDialog = true;
       showDialog(
         context: context,
@@ -339,7 +354,7 @@ class _HomePageState extends State<HomePage> {
                         category: '城',
                         url: 'https://www.matsumoto-castle.jp',
                         comment: '国宝の城',
-                        scanDate: DateTime.now().toIso8601String(),
+                        scanDate: DateTime.now(),
                       ),
                     );
                     loadCount(); // 件数更新

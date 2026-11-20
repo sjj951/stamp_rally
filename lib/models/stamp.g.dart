@@ -15,8 +15,12 @@ _Stamp _$StampFromJson(Map<String, dynamic> json) => _Stamp(
   url: json['url'] as String? ?? '',
   comment: json['comment'] as String? ?? '',
   imagePath: json['image_path'] as String?,
-  favorite: (json['favorite'] as num?)?.toInt() ?? 0,
-  scanDate: json['scan_date'] as String,
+  favorite: json['favorite'] == null
+      ? false
+      : const SqliteBoolConverter().fromJson((json['favorite'] as num).toInt()),
+  scanDate: const SqliteDateTimeConverter().fromJson(
+    json['scan_date'] as String,
+  ),
 );
 
 Map<String, dynamic> _$StampToJson(_Stamp instance) => <String, dynamic>{
@@ -28,6 +32,6 @@ Map<String, dynamic> _$StampToJson(_Stamp instance) => <String, dynamic>{
   'url': instance.url,
   'comment': instance.comment,
   'image_path': instance.imagePath,
-  'favorite': instance.favorite,
-  'scan_date': instance.scanDate,
+  'favorite': const SqliteBoolConverter().toJson(instance.favorite),
+  'scan_date': const SqliteDateTimeConverter().toJson(instance.scanDate),
 };

@@ -21,7 +21,7 @@ class StampDetailPage extends StatefulWidget {
 class _StampDetailPageState extends State<StampDetailPage> {
   final ImagePicker picker = ImagePicker();
   late String? imagePath;
-  int favorite = 0;
+  bool favorite = false;
   @override
   void initState() {
     super.initState();
@@ -90,9 +90,9 @@ class _StampDetailPageState extends State<StampDetailPage> {
     final stampId = widget.stamp.id;
     if (stampId == null) return;
 
-    final newValue = favorite == 0 ? 1 : 0;
+    final newValue = !favorite;
 
-    await StampRepository().updateFavorite(stampId, newValue == 1);
+    await StampRepository().updateFavorite(stampId, newValue);
 
     setState(() {
       favorite = newValue;
@@ -101,7 +101,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(newValue == 1 ? 'お気に入りに追加しました' : 'お気に入りを解除しました'),
+          content: Text(newValue ? 'お気に入りに追加しました' : 'お気に入りを解除しました'),
         ),
       );
     }
@@ -158,7 +158,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
           IconButton(
             onPressed: toggleFavorite,
             icon: Icon(
-              favorite == 1 ? Icons.star : Icons.star_border,
+              favorite == true ? Icons.star : Icons.star_border,
               color: Colors.amber,
             ),
           ),
@@ -272,7 +272,7 @@ class _StampDetailPageState extends State<StampDetailPage> {
 
                 Text(
                   DateFormat('yyyy/MM/dd HH:mm')
-                      .format(DateTime.parse(stamp.scanDate)),
+                      .format(stamp.scanDate),
                 ),
               ],
             ),

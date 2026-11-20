@@ -230,7 +230,7 @@ class _StampListPageBody extends StatelessWidget {
 
                           title: Row(
                             children: [
-                              if (stamp.favorite == 1)
+                              if (stamp.favorite == true)
                                 const Icon(
                                   Icons.star,
                                   color: Colors.amber,
@@ -262,7 +262,7 @@ class _StampListPageBody extends StatelessWidget {
                               ),
 
                               Text(
-                                '訪問日: ${DateFormat('yyyy/MM/dd HH:mm').format(DateTime.parse(stamp.scanDate))}',
+                                '訪問日: ${DateFormat('yyyy/MM/dd HH:mm').format(stamp.scanDate)}',
                               ),
 
                               Text(

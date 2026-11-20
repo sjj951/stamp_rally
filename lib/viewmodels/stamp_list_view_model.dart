@@ -3,28 +3,26 @@ import 'package:flutter/foundation.dart';
 import '../models/stamp.dart';
 import '../repositories/stamp_repository.dart';
 import '../repositories/spot_repository.dart';
+import '../models/filter_state.dart';
 
 import 'package:async/async.dart';
 
-import '../models/filter_state.dart';
+import '../models/repository_result.dart';
 
 class StampListViewModel extends ChangeNotifier {
   final StampRepository repository = StampRepository();
   final SpotRepository spotRepository = SpotRepository();
   List<Stamp> stamps = [];
-
   List<Stamp> filteredStamps = [];
-
+  String? errorMessage;
   FilterState filters = const FilterState();
-
   List<String> categories = ['すべて'];
   List<String> prefectures = ['すべて'];
-
   int _requestId = 0;
   CancelableOperation<List<String>>? _categoryOperation;
   CancelableOperation<List<String>>? _prefectureOperation;
   bool isLoadingFilter = false;
-
+  bool isLoading = false;
   @override
   void dispose() {
     _categoryOperation?.cancel();
@@ -34,15 +32,47 @@ class StampListViewModel extends ChangeNotifier {
   }
 
   Future<void> load() async {
-    stamps = await repository.getAll();
-    categories = await spotRepository.getCategories();
-    prefectures = await spotRepository.getPrefecturesByCategory(
-      selectedCategory,
-    );
-
-    filter();
+    isLoading = true;
+    errorMessage = null;
 
     notifyListeners();
+
+    try {
+      final stampResult = await repository.getAll();
+
+      final categoryResult = await spotRepository.getCategories();
+
+      final prefectureResult = await spotRepository.getPrefectures();
+
+      stampResult.when(
+        success: (items) {
+          stamps = items;
+        },
+        failure: (message) {
+          errorMessage = message;
+        },
+      );
+
+      categoryResult.when(
+        success: (items) {
+          categories = items;
+        },
+        failure: (_) {},
+      );
+
+      prefectureResult.when(
+        success: (items) {
+          prefectures = items;
+        },
+        failure: (_) {},
+      );
+
+      filter();
+    } finally {
+      isLoading = false;
+
+      notifyListeners();
+    }
   }
 
   void filter() {
@@ -51,7 +81,7 @@ class StampListViewModel extends ChangeNotifier {
         searchText.toLowerCase(),
       );
 
-      final matchFavorite = !favoriteOnly || stamp.favorite == 1;
+      final matchFavorite = !favoriteOnly || stamp.favorite == true;
 
       final matchCategory = selectedCategory == 'すべて'
           ? true
@@ -121,11 +151,10 @@ class StampListViewModel extends ChangeNotifier {
 
   Future<void> setCategory(String value) async {
     final requestId = ++_requestId;
+    final newState = filters.copyWith(category: value);
 
     isLoadingFilter = true;
     notifyListeners();
-
-    final newState = filters.copyWith(category: value);
 
     if (newState == filters) {
       return;
@@ -136,7 +165,14 @@ class StampListViewModel extends ChangeNotifier {
     await _prefectureOperation?.cancel();
 
     _prefectureOperation = CancelableOperation.fromFuture(
-      spotRepository.getPrefecturesByCategory(selectedCategory),
+      spotRepository
+          .getPrefecturesByCategory(selectedCategory)
+          .then(
+            (result) => result.when(
+              success: (prefectures) => prefectures,
+              failure: (message) => throw Exception(message),
+            ),
+          ),
     );
 
     try {
@@ -182,7 +218,14 @@ class StampListViewModel extends ChangeNotifier {
     await _categoryOperation?.cancel();
 
     _categoryOperation = CancelableOperation.fromFuture(
-      spotRepository.getCategoriesByPrefecture(selectedPrefecture),
+      spotRepository
+          .getCategoriesByPrefecture(selectedPrefecture)
+          .then(
+            (result) => result.when(
+              success: (categories) => categories,
+              failure: (message) => throw Exception(message),
+            ),
+          ),
     );
 
     try {

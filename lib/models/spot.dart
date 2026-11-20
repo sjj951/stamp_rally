@@ -20,4 +20,5 @@ abstract class Spot with _$Spot {
   }) = _Spot;
 
   factory Spot.fromJson(Map<String, dynamic> json) => _$SpotFromJson(json);
+  factory Spot.fromMap(Map<String, dynamic> map) => Spot.fromJson(map);
 }
