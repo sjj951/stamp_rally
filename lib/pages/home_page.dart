@@ -11,6 +11,7 @@ import '../models/category_progress.dart';
 // cspell:ignore viewmodels
 import '../viewmodels/home_view_model.dart';
 import '../models/repository_result.dart';
+import 'badge_history_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -311,7 +312,26 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                ListTile(
+                  leading: const Icon(
+                    Icons.workspace_premium,
+                    color: Colors.amber,
+                  ),
 
+                  title: const Text('獲得バッジ'),
+
+                  trailing: const Icon(Icons.chevron_right),
+
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const BadgeHistoryPage(),
+                      ),
+                    );
+                  },
+                ),
+                
                 const SizedBox(height: 40),
 
                 ElevatedButton.icon(

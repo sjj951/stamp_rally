@@ -45,7 +45,6 @@ class _QrScanPageState extends State<QrScanPage> {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(const SnackBar(content: Text('既に取得済みのスタンプです')));
-
                 Navigator.pop(context);
               }
 

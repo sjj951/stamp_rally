@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import '../models/category_progress.dart';
 import '../models/stamp.dart';
 import '../models/spot.dart';
+import '../models/achievement_badge.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -29,7 +30,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 7,
+      version: 8,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
@@ -62,6 +63,15 @@ class DatabaseHelper {
     )
   ''');
 
+    await db.execute('''
+    CREATE TABLE badges(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      badge_name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      achieved_percent INTEGER NOT NULL,
+      achieved_at TEXT NOT NULL
+    )
+  ''');
     await _insertInitialSpots(db);
   }
 
@@ -129,6 +139,17 @@ class DatabaseHelper {
     }
     if (oldVersion < 7) {
       await db.execute('ALTER TABLE spots ADD COLUMN prefecture TEXT');
+    }
+    if (oldVersion < 8) {
+      await db.execute('''
+    CREATE TABLE badges(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      badge_name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      achieved_percent INTEGER NOT NULL,
+      achieved_at TEXT NOT NULL
+    )
+  ''');
     }
   }
 
@@ -293,6 +314,47 @@ class DatabaseHelper {
         'spot_idへ変換できませんでした',
       );
     }
+  }
+
+  //
+  Future<void> insertBadge(AchievementBadge badge) async {
+    final db = await database;
+
+    await db.insert('badges', {
+      'badge_name': badge.badgeName,
+      'category': badge.category,
+      'achieved_percent': badge.achievedPercent,
+      'achieved_at': badge.achievedAt.toIso8601String(),
+    });
+  }
+
+  Future<List<AchievementBadge>> getBadges() async {
+    final db = await database;
+
+    final result = await db.query('badges', orderBy: 'achieved_at DESC');
+
+    return result.map((e) {
+      return AchievementBadge(
+        id: e['id'] as int,
+        badgeName: e['badge_name'] as String,
+        category: e['category'] as String,
+        achievedPercent: e['achieved_percent'] as int,
+        achievedAt: DateTime.parse(e['achieved_at'] as String),
+      );
+    }).toList();
+  }
+
+  //バッジ重複防止
+  Future<bool> badgeExists(String badgeName, String category) async {
+    final db = await database;
+
+    final result = await db.query(
+      'badges',
+      where: 'badge_name = ? AND category = ?',
+      whereArgs: [badgeName, category],
+    );
+
+    return result.isNotEmpty;
   }
 
   // 都道府県の一覧を取得する関数

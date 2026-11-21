@@ -16,7 +16,6 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> load() async {
     final resultCount = await _stampRepository.getCount();
-
     resultCount.when(
       success: (count) {
         stampCount = count;
