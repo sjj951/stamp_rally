@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'badge_detail_page.dart';
 import '../viewmodels/badge_history_view_model.dart';
 
 class BadgeHistoryPage extends StatelessWidget {
@@ -48,28 +49,16 @@ class _BadgeHistoryView extends StatelessWidget {
                           leading: _badgeIcon(badge.badgeName),
 
                           title: Text(badge.badgeName),
-
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'カテゴリ: '
-                                '${badge.category}',
+                          subtitle: Text(badge.category),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BadgeDetailPage(badge: badge),
                               ),
-
-                              Text(
-                                '達成率: '
-                                '${badge.achievedPercent}%',
-                              ),
-
-                              Text(
-                                '獲得日: '
-                                '${badge.achievedAt.year}/'
-                                '${badge.achievedAt.month.toString().padLeft(2, '0')}/'
-                                '${badge.achievedAt.day.toString().padLeft(2, '0')}',
-                              ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
                       );
                     },

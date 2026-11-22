@@ -15,6 +15,8 @@ abstract class AchievementBadge with _$AchievementBadge {
     required int achievedPercent,
 
     required DateTime achievedAt,
+
+    @Default('') String description,
   }) = _AchievementBadge;
 
   factory AchievementBadge.fromJson(Map<String, dynamic> json) =>

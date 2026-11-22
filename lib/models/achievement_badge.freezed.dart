@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AchievementBadge {
 
- int? get id; String get badgeName; String get category; int get achievedPercent; DateTime get achievedAt;
+ int? get id; String get badgeName; String get category; int get achievedPercent; DateTime get achievedAt; String get description;
 /// Create a copy of AchievementBadge
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $AchievementBadgeCopyWith<AchievementBadge> get copyWith => _$AchievementBadgeCo
 @override
 bool operator ==(Object other) {
   final _this = this as AchievementBadge;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementBadge&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.badgeName, _this.badgeName) || other.badgeName == _this.badgeName)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.achievedPercent, _this.achievedPercent) || other.achievedPercent == _this.achievedPercent)&&(identical(other.achievedAt, _this.achievedAt) || other.achievedAt == _this.achievedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AchievementBadge&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.badgeName, _this.badgeName) || other.badgeName == _this.badgeName)&&(identical(other.category, _this.category) || other.category == _this.category)&&(identical(other.achievedPercent, _this.achievedPercent) || other.achievedPercent == _this.achievedPercent)&&(identical(other.achievedAt, _this.achievedAt) || other.achievedAt == _this.achievedAt)&&(identical(other.description, _this.description) || other.description == _this.description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as AchievementBadge;
-  return Object.hash(runtimeType,_this.id,_this.badgeName,_this.category,_this.achievedPercent,_this.achievedAt);
+  return Object.hash(runtimeType,_this.id,_this.badgeName,_this.category,_this.achievedPercent,_this.achievedAt,_this.description);
 }
 
 @override
 String toString() {
   final _this = this as AchievementBadge;
-  return 'AchievementBadge(id: ${_this.id}, badgeName: ${_this.badgeName}, category: ${_this.category}, achievedPercent: ${_this.achievedPercent}, achievedAt: ${_this.achievedAt})';
+  return 'AchievementBadge(id: ${_this.id}, badgeName: ${_this.badgeName}, category: ${_this.category}, achievedPercent: ${_this.achievedPercent}, achievedAt: ${_this.achievedAt}, description: ${_this.description})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $AchievementBadgeCopyWith<$Res>  {
   factory $AchievementBadgeCopyWith(AchievementBadge value, $Res Function(AchievementBadge) _then) = _$AchievementBadgeCopyWithImpl;
 @useResult
 $Res call({
- int? id, String badgeName, String category, int achievedPercent, DateTime achievedAt
+ int? id, String badgeName, String category, int achievedPercent, DateTime achievedAt, String description
 });
 
 
@@ -71,14 +71,15 @@ class _$AchievementBadgeCopyWithImpl<$Res>
 
 /// Create a copy of AchievementBadge
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? badgeName = null,Object? category = null,Object? achievedPercent = null,Object? achievedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? badgeName = null,Object? category = null,Object? achievedPercent = null,Object? achievedAt = null,Object? description = null,}) {
   return _then(AchievementBadge(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,badgeName: null == badgeName ? _self.badgeName : badgeName // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,achievedPercent: null == achievedPercent ? _self.achievedPercent : achievedPercent // ignore: cast_nullable_to_non_nullable
 as int,achievedAt: null == achievedAt ? _self.achievedAt : achievedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String badgeName,  String category,  int achievedPercent,  DateTime achievedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String badgeName,  String category,  int achievedPercent,  DateTime achievedAt,  String description)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AchievementBadge() when $default != null:
-return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_that.achievedAt);case _:
+return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_that.achievedAt,_that.description);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String badgeName,  String category,  int achievedPercent,  DateTime achievedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String badgeName,  String category,  int achievedPercent,  DateTime achievedAt,  String description)  $default,) {final _that = this;
 switch (_that) {
 case _AchievementBadge():
-return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_that.achievedAt);case _:
+return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_that.achievedAt,_that.description);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String badgeName,  String category,  int achievedPercent,  DateTime achievedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String badgeName,  String category,  int achievedPercent,  DateTime achievedAt,  String description)?  $default,) {final _that = this;
 switch (_that) {
 case _AchievementBadge() when $default != null:
-return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_that.achievedAt);case _:
+return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_that.achievedAt,_that.description);case _:
   return null;
 
 }
@@ -219,7 +220,7 @@ return $default(_that.id,_that.badgeName,_that.category,_that.achievedPercent,_t
 @JsonSerializable()
 
 class _AchievementBadge implements AchievementBadge {
-  const _AchievementBadge({this.id, required this.badgeName, required this.category, required this.achievedPercent, required this.achievedAt});
+  const _AchievementBadge({this.id, required this.badgeName, required this.category, required this.achievedPercent, required this.achievedAt, this.description = ''});
   factory _AchievementBadge.fromJson(Map<String, dynamic> json) => _$AchievementBadgeFromJson(json);
 
 @override final  int? id;
@@ -227,6 +228,7 @@ class _AchievementBadge implements AchievementBadge {
 @override final  String category;
 @override final  int achievedPercent;
 @override final  DateTime achievedAt;
+@override@JsonKey() final  String description;
 
 /// Create a copy of AchievementBadge
 /// with the given fields replaced by the non-null parameter values.
@@ -241,18 +243,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementBadge&&(identical(other.id, id) || other.id == id)&&(identical(other.badgeName, badgeName) || other.badgeName == badgeName)&&(identical(other.category, category) || other.category == category)&&(identical(other.achievedPercent, achievedPercent) || other.achievedPercent == achievedPercent)&&(identical(other.achievedAt, achievedAt) || other.achievedAt == achievedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AchievementBadge&&(identical(other.id, id) || other.id == id)&&(identical(other.badgeName, badgeName) || other.badgeName == badgeName)&&(identical(other.category, category) || other.category == category)&&(identical(other.achievedPercent, achievedPercent) || other.achievedPercent == achievedPercent)&&(identical(other.achievedAt, achievedAt) || other.achievedAt == achievedAt)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,badgeName,category,achievedPercent,achievedAt);
+    return Object.hash(runtimeType,id,badgeName,category,achievedPercent,achievedAt,description);
 }
 
 @override
 String toString() {
-    return 'AchievementBadge(id: $id, badgeName: $badgeName, category: $category, achievedPercent: $achievedPercent, achievedAt: $achievedAt)';
+    return 'AchievementBadge(id: $id, badgeName: $badgeName, category: $category, achievedPercent: $achievedPercent, achievedAt: $achievedAt, description: $description)';
 }
 
 
@@ -263,7 +265,7 @@ abstract mixin class _$AchievementBadgeCopyWith<$Res> implements $AchievementBad
   factory _$AchievementBadgeCopyWith(_AchievementBadge value, $Res Function(_AchievementBadge) _then) = __$AchievementBadgeCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String badgeName, String category, int achievedPercent, DateTime achievedAt
+ int? id, String badgeName, String category, int achievedPercent, DateTime achievedAt, String description
 });
 
 
@@ -280,14 +282,15 @@ class __$AchievementBadgeCopyWithImpl<$Res>
 
 /// Create a copy of AchievementBadge
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? badgeName = null,Object? category = null,Object? achievedPercent = null,Object? achievedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? badgeName = null,Object? category = null,Object? achievedPercent = null,Object? achievedAt = null,Object? description = null,}) {
   return _then(_AchievementBadge(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,badgeName: null == badgeName ? _self.badgeName : badgeName // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,achievedPercent: null == achievedPercent ? _self.achievedPercent : achievedPercent // ignore: cast_nullable_to_non_nullable
 as int,achievedAt: null == achievedAt ? _self.achievedAt : achievedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as DateTime,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

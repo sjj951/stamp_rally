@@ -331,7 +331,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 40),
 
                 ElevatedButton.icon(
@@ -360,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                     loadCount();
                   },
                   icon: const Icon(Icons.list),
-                  label: const Text('スタンプ一覧を見る'),
+                  label: const Text('スタンプ一覧'),
                 ),
 
                 const SizedBox(height: 20),

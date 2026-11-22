@@ -83,4 +83,16 @@ class SpotRepository {
       return RepositoryResult.failure(e.toString());
     }
   }
+
+  Future<RepositoryResult<List<Spot>>> getCompletedSpotsByCategory(
+    String category,
+  ) async {
+    try {
+      final result = await _db.getCompletedSpotsByCategory(category);
+
+      return RepositoryResult.success(result);
+    } catch (e) {
+      return RepositoryResult.failure(e.toString());
+    }
+  }
 }

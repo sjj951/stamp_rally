@@ -357,6 +357,26 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
+  //カテゴリごとの達成済みスポット取得
+  Future<List<Spot>> getCompletedSpotsByCategory(String category) async {
+    final db = await database;
+
+    final result = await db.rawQuery(
+      '''
+    SELECT DISTINCT
+      sp.*
+    FROM spots sp
+    INNER JOIN stamps st
+      ON sp.id = st.spot_id
+    WHERE sp.category = ?
+    ORDER BY sp.spot_name
+  ''',
+      [category],
+    );
+
+    return result.map((e) => Spot.fromJson(e)).toList();
+  }
+
   // 都道府県の一覧を取得する関数
   Future<List<String>> getPrefectures() async {
     final db = await database;
