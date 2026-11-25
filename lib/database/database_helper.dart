@@ -44,6 +44,7 @@ class DatabaseHelper {
         spot_id INTEGER NOT NULL,
         spot_name TEXT NOT NULL,
         category TEXT,
+        prefecture TEXT,
         url TEXT NOT NULL,
         comment TEXT,
         image_path TEXT,
@@ -223,7 +224,7 @@ class DatabaseHelper {
 
       {
         'spot_name': '松本市美術館',
-        'category': '',
+        'category': '美術館',
         'url': 'https://www.city.matsumoto.nagano.jp/museum',
         'comment': '松本城近くの美術館',
         'prefecture': '松本市',
@@ -375,6 +376,25 @@ class DatabaseHelper {
     );
 
     return result.map((e) => Spot.fromJson(e)).toList();
+  }
+
+  //カテゴリ内の取得済みスタンプを取得
+  Future<List<Stamp>> getCompletedStampsByCategory(String category) async {
+    final db = await database;
+
+    final result = await db.rawQuery(
+      '''
+    SELECT st.*
+    FROM stamps st
+    INNER JOIN spots sp
+      ON st.spot_id = sp.id
+    WHERE sp.category = ?
+    ORDER BY st.scan_date DESC
+  ''',
+      [category],
+    );
+
+    return result.map((e) => Stamp.fromJson(e)).toList();
   }
 
   // 都道府県の一覧を取得する関数

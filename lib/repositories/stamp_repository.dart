@@ -60,6 +60,18 @@ class StampRepository {
     }
   }
 
+  Future<RepositoryResult<List<Stamp>>> getCompletedStampsByCategory(
+    String category,
+  ) async {
+    try {
+      final result = await _db.getCompletedStampsByCategory(category);
+
+      return RepositoryResult.success(result);
+    } catch (e) {
+      return RepositoryResult.failure(e.toString());
+    }
+  }
+
   Future<RepositoryResult<bool>> exists(int spotId) async {
     try {
       final result = await _db.existsStamp(spotId);

@@ -78,6 +78,52 @@ class _StampDetailView extends StatelessWidget {
 
                     _PhotoArea(vm),
 
+                    const SizedBox(height: 12),
+
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.photo_library),
+
+                          label: Text(vm.imagePath == null ? '写真追加' : '写真変更'),
+
+                          onPressed: () async {
+                            final success = await vm.pickImageFromGallery();
+
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('写真を保存しました')),
+                              );
+                            }
+                          },
+                        ),
+
+                        ElevatedButton.icon(
+                          icon: const Icon(Icons.camera_alt),
+
+                          label: const Text('カメラ撮影'),
+
+                          onPressed: () async {
+                            final success = await vm.takePhoto();
+
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('写真を保存しました')),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 24),
 
                     _InfoArea(vm),
@@ -231,6 +277,38 @@ class _InfoArea extends StatelessWidget {
           leading: const Icon(Icons.link),
           title: const Text('URL'),
           subtitle: Text(stamp.url.isEmpty ? 'なし' : stamp.url),
+        ),
+
+        InkWell(
+          onTap: () {
+            final url = stamp.url;
+            if (url.isNotEmpty) {
+              vm.openUrl(url);
+            }
+          },
+          child: Text(
+            stamp.url,
+            style: const TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+
+        ElevatedButton.icon(
+          onPressed: stamp.url.isEmpty ? null : () => vm.openUrl(stamp.url),
+          icon: const Icon(Icons.open_in_new),
+          label: const Text('公式サイトを見る'),
+        ),
+
+        const SizedBox(height: 20),
+
+        ElevatedButton.icon(
+          onPressed: () {
+            vm.openMap(stamp.spotName);
+          },
+          icon: const Icon(Icons.map),
+          label: const Text('Google Mapsで開く'),
         ),
 
         ListTile(

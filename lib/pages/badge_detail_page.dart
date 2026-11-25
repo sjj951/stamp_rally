@@ -5,6 +5,7 @@ import '../models/achievement_badge.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/badge_detail_view_model.dart';
+import 'completed_spots_page.dart';
 
 class BadgeDetailPage extends StatelessWidget {
   final AchievementBadge badge;
@@ -78,30 +79,20 @@ class _BadgeDetailView extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                const Text(
-                  '達成スポット一覧',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.list),
+                  label: const Text('達成スポット一覧'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CompletedSpotsPage(category: vm.badge.category),
+                      ),
+                    );
+                  },
                 ),
-
-                const SizedBox(height: 12),
-
-                ...vm.completedSpots.map((spot) {
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                      ),
-
-                      title: Text(spot.spotName),
-
-                      subtitle: Text(
-                        '${spot.prefecture} / '
-                        '${spot.category}',
-                      ),
-                    ),
-                  );
-                }),
               ],
             ),
           ),

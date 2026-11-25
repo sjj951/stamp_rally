@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 // cspell:ignore viewmodels
 import 'viewmodels/home_view_model.dart';
+import 'viewmodels/qr_scan_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => HomeViewModel())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => QrScanViewModel()),
+      ],
       child: MaterialApp(title: 'Stamp Rally', home: const HomePage()),
     );
   }

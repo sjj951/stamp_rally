@@ -3,22 +3,36 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'dart:convert';
 
-import '../models/stamp.dart';
-import '../repositories/stamp_repository.dart';
-import '../models/repository_result.dart';
+import 'package:provider/provider.dart';
 
-class QrScanPage extends StatefulWidget {
+import '../models/stamp.dart';
+import '../viewmodels/qr_scan_view_model.dart';
+
+class QrScanPage extends StatelessWidget {
   const QrScanPage({super.key});
 
   @override
-  State<QrScanPage> createState() => _QrScanPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => QrScanViewModel(),
+      child: const _QrScanPageBody(),
+    );
+  }
 }
 
-class _QrScanPageState extends State<QrScanPage> {
+class _QrScanPageBody extends StatefulWidget {
+  const _QrScanPageBody();
+
+  @override
+  State<_QrScanPageBody> createState() => _QrScanPageBodyState();
+}
+
+class _QrScanPageBodyState extends State<_QrScanPageBody> {
   bool scanned = false;
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<QrScanViewModel>();
     return Scaffold(
       appBar: AppBar(title: const Text('QRスキャン')),
       body: MobileScanner(
@@ -34,12 +48,7 @@ class _QrScanPageState extends State<QrScanPage> {
 
           try {
             final data = jsonDecode(code);
-
-            final result = await StampRepository().exists(data['spot_id']);
-            final bool exists = result.when(
-              success: (value) => value,
-              failure: (_) => false,
-            );
+            final bool exists = await vm.exists(data['spot_id']);
             if (exists == true) {
               if (context.mounted) {
                 ScaffoldMessenger.of(
@@ -51,7 +60,7 @@ class _QrScanPageState extends State<QrScanPage> {
               return;
             }
 
-            await StampRepository().insert(
+            vm.saveStamp(
               Stamp(
                 spotId: data['spot_id'],
                 spotName: data['spot_name'],

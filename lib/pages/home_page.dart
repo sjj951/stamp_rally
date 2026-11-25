@@ -10,6 +10,7 @@ import '../models/stamp.dart';
 import '../models/category_progress.dart';
 // cspell:ignore viewmodels
 import '../viewmodels/home_view_model.dart';
+import '../viewmodels/qr_scan_view_model.dart';
 import '../models/repository_result.dart';
 import 'badge_history_page.dart';
 
@@ -150,7 +151,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<HomeViewModel>();
-
+    final vmQr = context.watch<QrScanViewModel>();
     final rate = vm.stampCount / totalSpots;
 
     final percent = (rate * 100).toStringAsFixed(0);
@@ -367,7 +368,7 @@ class _HomePageState extends State<HomePage> {
 
                 ElevatedButton(
                   onPressed: () async {
-                    await StampRepository().insert(
+                    vmQr.saveStamp(
                       Stamp(
                         spotId: 3,
                         spotName: '松本城',
