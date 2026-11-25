@@ -397,6 +397,26 @@ class DatabaseHelper {
     return result.map((e) => Stamp.fromJson(e)).toList();
   }
 
+  //トランザクション制御追加
+  Future<void> insertStampWithBadges(
+    Stamp stamp,
+    List<AchievementBadge> badges,
+  ) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      await txn.insert('stamps', stamp.toJson());
+
+      for (final badge in badges) {
+        await txn.insert(
+          'badges',
+          badge.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.ignore,
+        );
+      }
+    });
+  }
+
   // 都道府県の一覧を取得する関数
   Future<List<String>> getPrefectures() async {
     final db = await database;

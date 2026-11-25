@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-import '../models/spot.dart';
 import '../models/stamp.dart';
 import '../repositories/stamp_repository.dart';
 import '../models/repository_result.dart';

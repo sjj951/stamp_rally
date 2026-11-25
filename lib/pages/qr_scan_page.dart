@@ -70,13 +70,34 @@ class _QrScanPageBodyState extends State<_QrScanPageBody> {
                 scanDate: DateTime.now(),
               ),
             );
+            if (!context.mounted) {
+              return;
+            }
+            if (vm.errorMessage != null) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(vm.errorMessage!)));
 
+              return;
+            }
+            for (final badge in vm.unlockedBadges) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '🏆 '
+                    '${badge.category} '
+                    '${badge.badgeName}獲得！',
+                  ),
+                ),
+              );
+            }
+            /*
             if (context.mounted) {
               ScaffoldMessenger.of(context)
                   .showSnackBar(const SnackBar(content: Text('スタンプ登録完了')));
 
               Navigator.pop(context);
             }
+            */
           } catch (e) {
             debugPrint('QR解析エラー: $e');
           }

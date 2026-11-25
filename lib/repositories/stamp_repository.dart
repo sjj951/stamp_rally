@@ -1,6 +1,8 @@
 import '../database/database_helper.dart';
 import '../models/stamp.dart';
+import '../models/achievement_badge.dart';
 import '../models/repository_result.dart';
+import '../services/badge_service.dart';
 
 class StampRepository {
   final DatabaseHelper _db = DatabaseHelper.instance;
@@ -67,6 +69,33 @@ class StampRepository {
       final result = await _db.getCompletedStampsByCategory(category);
 
       return RepositoryResult.success(result);
+    } catch (e) {
+      return RepositoryResult.failure(e.toString());
+    }
+  }
+
+  Future<RepositoryResult<List<AchievementBadge>>> saveStampAndBadges(
+    Stamp stamp,
+  ) async {
+    try {
+      final badges = await BadgeService().calculateUnlockedBadges(stamp);
+      await _db.insertStampWithBadges(stamp, badges);
+
+      return RepositoryResult.success(badges);
+    } catch (e) {
+      return RepositoryResult.failure(e.toString());
+    }
+  }
+
+  Future<RepositoryResult<List<AchievementBadge>>> saveStamp(
+    Stamp stamp,
+  ) async {
+    try {
+      final badges = await BadgeService().calculateUnlockedBadges(stamp);
+
+      await _db.insertStampWithBadges(stamp, badges);
+
+      return RepositoryResult.success(badges);
     } catch (e) {
       return RepositoryResult.failure(e.toString());
     }

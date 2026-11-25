@@ -3,11 +3,54 @@ import '../models/category_progress.dart';
 import '../repositories/badge_repository.dart';
 import '../repositories/spot_repository.dart';
 import '../models/repository_result.dart';
+import '../models/stamp.dart';
 
 class BadgeService {
   final BadgeRepository _badgeRepository = BadgeRepository();
 
   final SpotRepository _spotRepository = SpotRepository();
+
+  Future<List<AchievementBadge>> calculateUnlockedBadges(Stamp newStamp) async {
+    final badges = <AchievementBadge>[];
+
+    final progressResult = await _spotRepository.getCategoryProgress();
+
+    await progressResult.when(
+      success: (progressList) async {
+        for (final progress in progressList) {
+          final existsResult = await _badgeRepository.badgeExists(
+            progress.badgeRank.name,
+            progress.category,
+          );
+
+          final exists = existsResult.when(
+            success: (value) => value,
+            failure: (_) => true,
+          );
+
+          if (exists) {
+            continue;
+          }
+
+          badges.add(
+            AchievementBadge(
+              badgeName: progress.badgeRank.name,
+
+              category: progress.category,
+
+              achievedPercent: progress.progressPercent,
+
+              achievedAt: DateTime.now(),
+            ),
+          );
+        }
+      },
+
+      failure: (_) {},
+    );
+
+    return badges;
+  }
 
   Future<List<AchievementBadge>> checkAndUnlockBadges() async {
     final unlockedBadges = <AchievementBadge>[];
